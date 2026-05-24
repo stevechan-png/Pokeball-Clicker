@@ -1,0 +1,4309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokeball Clicker</title>
+    <style>
+      :root {
+        --red: #e3350d;
+        --dark-red: #a11700;
+        --white: #ffffff;
+        --bg-top: #0b1224;
+        --bg-bottom: #182a5c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .screen {
+        min-height: 100vh;
+      }
+
+      .title-screen {
+        display: grid;
+        place-items: center;
+        background: radial-gradient(circle at top, var(--bg-bottom), var(--bg-top) 55%);
+        padding: 24px;
+      }
+
+      .title-card {
+        width: min(92vw, 880px);
+        padding: 48px 24px;
+        border-radius: 24px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.28);
+        box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+      }
+
+      .game-title {
+        margin: 0 0 34px;
+        font-size: clamp(2.5rem, 9vw, 6rem);
+        line-height: 0.95;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--white);
+        text-shadow: 0 4px 0 var(--dark-red), 0 8px 20px rgba(0, 0, 0, 0.45);
+      }
+
+      .game-title .red {
+        color: var(--red);
+      }
+
+      .play-btn {
+        border: 0;
+        border-radius: 999px;
+        padding: 18px 52px;
+        font-size: clamp(1rem, 2vw, 1.35rem);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #111;
+        background: linear-gradient(#fff, #ececec);
+        box-shadow: 0 7px 0 #bdbdbd, 0 14px 24px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+      }
+
+      .play-btn:active {
+        transform: translateY(2px);
+      }
+
+      .note {
+        margin: 20px 0 0;
+        color: #e9e9e9;
+        font-size: 0.95rem;
+        opacity: 0.95;
+      }
+
+      .warning {
+        margin: 36px 0 0;
+        color: #ffc9c9;
+        font-size: 0.95rem;
+        opacity: 0.95;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .game-screen {
+        background: #000;
+        color: #fff;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        align-items: center;
+        justify-items: center;
+        padding: 16px;
+      }
+
+      .game-screen.disco-lights {
+        animation: discoPulse 1.2s ease-in-out infinite;
+      }
+
+      @keyframes discoPulse {
+        0% {
+          box-shadow: inset 0 0 0 3px rgba(255, 0, 128, 0.35);
+        }
+        33% {
+          box-shadow: inset 0 0 0 3px rgba(0, 200, 255, 0.45);
+        }
+        66% {
+          box-shadow: inset 0 0 0 3px rgba(180, 255, 0, 0.4);
+        }
+        100% {
+          box-shadow: inset 0 0 0 3px rgba(255, 0, 128, 0.35);
+        }
+      }
+
+      .coin-counter {
+        width: 100%;
+        text-align: center;
+        font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        margin-top: 8px;
+      }
+
+      .rainbow-counter {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        padding: 10px 12px;
+        border-radius: 16px;
+        background: rgba(20, 20, 20, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+        user-select: none;
+      }
+
+      .rainbow-counter .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .rainbow-counter .label {
+        white-space: nowrap;
+      }
+
+      .export-btn {
+        margin-top: 8px;
+        width: 100%;
+        border: 0;
+        border-radius: 999px;
+        padding: 8px 10px;
+        cursor: pointer;
+        font-weight: 700;
+        background: linear-gradient(90deg, #ff3b3b, #ffb800, #46ff6a, #3bb8ff, #b23bff);
+        color: #111;
+      }
+
+      .export-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.55);
+      }
+
+      .export-modal.hidden {
+        display: none;
+      }
+
+      .export-card {
+        width: min(92vw, 420px);
+        background: #111;
+        color: #fff;
+        border: 1px solid #333;
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .export-card h3 {
+        margin: 0 0 10px;
+      }
+
+      .export-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .export-grid input {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid #333;
+        background: #0b0b0b;
+        color: #fff;
+        padding: 10px 12px;
+        font-size: 1rem;
+      }
+
+      .code-box {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+          monospace;
+        background: #0b0b0b;
+        border: 1px dashed #444;
+        border-radius: 10px;
+        padding: 10px 12px;
+        word-break: break-all;
+        min-height: 40px;
+      }
+
+      .export-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+
+      .export-actions button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .export-primary {
+        background: #3bd16f;
+      }
+
+      .export-secondary {
+        background: #f1f1f1;
+      }
+
+      .pokeball-btn {
+        width: min(260px, 58vw);
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        border: 8px solid #111;
+        background: linear-gradient(to bottom, #f53636 0 49.5%, #222 49.5% 50.5%, #f5f5f5 50.5% 100%);
+        position: relative;
+        cursor: pointer;
+        box-shadow: 0 16px 28px rgba(0, 0, 0, 0.5);
+      }
+
+      .pokeball-btn::before {
+        content: "";
+        width: 32%;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        border: 8px solid #111;
+        background: #f8f8f8;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .pokeball-btn::after {
+        content: "";
+        width: 14%;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        background: #d7d7d7;
+        border: 4px solid #111;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .pokeball-btn:active {
+        transform: scale(0.97);
+      }
+
+      .pokeball-btn.great {
+        border: 6px solid #111;
+        background-image: url("assets/great-ball.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      .pokeball-btn.great::before,
+      .pokeball-btn.great::after {
+        display: none;
+      }
+
+      .pokeball-btn.corrupted {
+        border-color: #4a148c;
+        background: linear-gradient(to bottom, #9c27b0 0 49.5%, #1a1a1a 49.5% 50.5%, #e1bee7 50.5% 100%);
+        background-image: none;
+        box-shadow:
+          0 0 32px rgba(156, 39, 176, 0.85),
+          0 16px 28px rgba(0, 0, 0, 0.5);
+        animation: corruption-pokeball-pulse 1.4s ease-in-out infinite;
+      }
+
+      .pokeball-btn.corrupted::before,
+      .pokeball-btn.corrupted::after {
+        display: block;
+      }
+
+      .pokeball-btn.corrupted::before {
+        border-color: #4a148c;
+        background: #f3e5f5;
+      }
+
+      .pokeball-btn.corrupted::after {
+        border-color: #4a148c;
+        background: #ce93d8;
+      }
+
+      @keyframes corruption-pokeball-pulse {
+        0%,
+        100% {
+          filter: brightness(1);
+          box-shadow:
+            0 0 32px rgba(156, 39, 176, 0.85),
+            0 16px 28px rgba(0, 0, 0, 0.5);
+        }
+        50% {
+          filter: brightness(1.12);
+          box-shadow:
+            0 0 44px rgba(186, 104, 200, 1),
+            0 16px 28px rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      .gold-coin {
+        position: fixed;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        border: 3px solid rgba(0, 0, 0, 0.55);
+        background: radial-gradient(circle at 30% 30%, #fff5a8, #ffd24a 35%, #d79b00 70%, #8a5a00 100%);
+        box-shadow:
+          0 10px 20px rgba(0, 0, 0, 0.5),
+          0 0 18px rgba(255, 204, 0, 0.35);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        color: #3a2400;
+        font-weight: 900;
+        user-select: none;
+      }
+
+      .gold-coin.hidden {
+        display: none;
+      }
+
+      .gold-coin::after {
+        content: "★";
+        font-size: 1.25rem;
+        transform: translateY(-1px);
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+
+      .shop-btn {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        width: 58px;
+        height: 58px;
+        border: 0;
+        border-radius: 50%;
+        font-size: 1.6rem;
+        background: #f5f5f5;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        cursor: pointer;
+      }
+
+      .backpack-btn {
+        position: fixed;
+        left: 18px;
+        bottom: 18px;
+        width: 58px;
+        height: 58px;
+        border: 0;
+        border-radius: 50%;
+        font-size: 1.6rem;
+        background: #f5f5f5;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        cursor: pointer;
+      }
+
+      .inventory-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: flex;
+        justify-content: flex-start;
+      }
+
+      .inventory-modal.hidden {
+        display: none;
+      }
+
+      .inventory-card {
+        width: min(92vw, 360px);
+        height: 100vh;
+        background: #111;
+        color: #fff;
+        border-right: 1px solid #333;
+        padding: 16px;
+        text-align: left;
+        overflow-y: auto;
+      }
+
+      .inventory-tab-row {
+        display: flex;
+        gap: 8px;
+        margin: 0 0 14px;
+      }
+
+      .inventory-tab {
+        flex: 1;
+        border: 1px solid #444;
+        border-radius: 12px;
+        padding: 10px 6px;
+        cursor: pointer;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        color: #999;
+        background: linear-gradient(180deg, #222, #151515);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .inventory-tab:active {
+        transform: translateY(1px);
+      }
+
+      .inventory-tab.inventory-tab-active {
+        color: #fff;
+        border-color: #6a6a6a;
+        background: linear-gradient(180deg, #2f2f2f, #1c1c1c);
+      }
+
+      .shop-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .shop-modal.hidden {
+        display: none;
+      }
+
+      .shop-card {
+        width: min(92vw, 360px);
+        height: 100vh;
+        background: #111;
+        color: #fff;
+        border-left: 1px solid #333;
+        padding: 16px;
+        text-align: left;
+        overflow-y: auto;
+      }
+
+      .shop-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .shop-card h2 {
+        margin: 0;
+      }
+
+      .close-btn-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 0;
+        cursor: pointer;
+        background: #f1f1f1;
+        color: #111;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .shop-actions button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 18px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .shop-actions button:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+        filter: grayscale(0.2);
+      }
+
+      .shop-section {
+        border: 1px solid #2b2b2b;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .shop-section h3 {
+        margin: 0 0 8px;
+      }
+
+      .shop-section p {
+        margin: 0 0 10px;
+      }
+
+      .pay-btn {
+        background: #3bd16f;
+      }
+
+      .close-btn {
+        background: #f1f1f1;
+      }
+
+      .shop-status {
+        margin-top: 12px;
+        font-size: 0.95rem;
+        color: #d7d7d7;
+      }
+
+      .lottery-ticket-list {
+        margin: 10px 0 0;
+        padding-left: 18px;
+      }
+
+      .advancements-badge {
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        z-index: 50;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.22);
+        cursor: pointer;
+        background: radial-gradient(circle at 30% 30%, #fff6c7, #ffd54d 40%, #c68b00 80%);
+        box-shadow:
+          0 10px 20px rgba(0, 0, 0, 0.55),
+          0 0 18px rgba(255, 215, 0, 0.25);
+        color: #2b1a00;
+        font-weight: 900;
+        letter-spacing: 0.03em;
+        display: grid;
+        place-items: center;
+        user-select: none;
+      }
+
+      .advancements-badge::after {
+        content: "A";
+        font-size: 1.25rem;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+
+      .advancements-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: flex;
+        justify-content: flex-start;
+        z-index: 60;
+      }
+
+      .advancements-modal.hidden {
+        display: none;
+      }
+
+      .advancements-card {
+        width: 50vw;
+        min-width: 320px;
+        max-width: 720px;
+        height: 100vh;
+        background: #111;
+        color: #fff;
+        border-right: 1px solid #333;
+        padding: 16px;
+        text-align: left;
+        overflow-y: auto;
+      }
+
+      .advancements-card h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #eee;
+      }
+
+      .advancements-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .advancement {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+      }
+
+      .advancement.outline-white {
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+      }
+
+      .advancement.outline-yellow {
+        border: 2px solid #ffd700;
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+      }
+
+      .advancement.outline-red {
+        border: 2px solid #e3350d;
+        box-shadow: 0 0 12px rgba(227, 53, 13, 0.25);
+      }
+
+      .advancement.outline-dark-green {
+        border: 2px solid #0d4d2b;
+        box-shadow: 0 0 12px rgba(13, 77, 43, 0.45);
+      }
+
+      .advancement.outline-purple {
+        border: 2px solid #a855f7;
+        box-shadow: 0 0 18px rgba(168, 85, 247, 0.4);
+      }
+
+      .advancement.outline-purple .advancement-title {
+        background: linear-gradient(90deg, #e9d5ff, #c084fc, #f0abfc, #a855f7, #e9d5ff);
+        background-size: 220% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: advancement-purple-shimmer 2.8s ease-in-out infinite;
+      }
+
+      @keyframes advancement-purple-shimmer {
+        0% {
+          background-position: 0% center;
+        }
+        100% {
+          background-position: 220% center;
+        }
+      }
+
+      .advancement-title {
+        flex: 1;
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      .advancement-check {
+        color: #3bd16f;
+        font-weight: 900;
+        font-size: 1.15rem;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      .advancement-check.hidden {
+        display: none;
+      }
+
+      .adv-detail-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 70;
+      }
+
+      .adv-detail-modal.hidden {
+        display: none;
+      }
+
+      .adv-detail-card {
+        width: min(92vw, 460px);
+        background: #111;
+        color: #fff;
+        border: 1px solid #333;
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .adv-detail-card h4 {
+        margin: 0 0 10px;
+      }
+
+      .adv-detail-card p {
+        margin: 0 0 14px;
+        color: #d7d7d7;
+        line-height: 1.35;
+      }
+
+      .adv-detail-progress {
+        margin: 0 0 14px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(59, 209, 111, 0.12);
+        border: 1px solid rgba(59, 209, 111, 0.35);
+        color: #b8f5cf;
+        font-weight: 700;
+        font-size: 0.95rem;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .adv-detail-progress.hidden {
+        display: none;
+      }
+
+      .equipped-pokeball-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 70;
+      }
+
+      .equipped-pokeball-modal.hidden {
+        display: none;
+      }
+
+      .equipped-pokeball-card {
+        width: min(92vw, 420px);
+        background: #111;
+        color: #fff;
+        border: 1px solid #333;
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .equipped-pokeball-card h3 {
+        margin: 0;
+      }
+
+      .equipped-pokeball-hint {
+        margin: 8px 0 14px;
+        color: #999;
+        font-size: 0.85rem;
+        line-height: 1.35;
+      }
+
+      .equipped-pokeball-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      .equipped-pokeball-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid #333;
+        background: #1a1a1a;
+        cursor: pointer;
+        text-align: left;
+        width: 100%;
+        color: inherit;
+        font: inherit;
+      }
+
+      .equipped-pokeball-option:hover:not(:disabled) {
+        border-color: #555;
+        background: #222;
+      }
+
+      .equipped-pokeball-option.equipped {
+        border-color: rgba(59, 209, 111, 0.55);
+        background: rgba(59, 209, 111, 0.1);
+      }
+
+      .equipped-pokeball-option:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .equipped-pokeball-preview {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 4px solid #111;
+        flex-shrink: 0;
+        position: relative;
+      }
+
+      .equipped-pokeball-preview.normal {
+        background: linear-gradient(to bottom, #f53636 0 49.5%, #222 49.5% 50.5%, #f5f5f5 50.5% 100%);
+      }
+
+      .equipped-pokeball-preview.great {
+        background: url("assets/great-ball.png") center / cover no-repeat;
+      }
+
+      .equipped-pokeball-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .equipped-pokeball-info strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .equipped-pokeball-info span {
+        color: #aaa;
+        font-size: 0.85rem;
+      }
+
+      .equipped-pokeball-badge {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #3bd16f;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .got-it-btn {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-weight: 800;
+        background: #3bd16f;
+      }
+
+      .open-all-confirm-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+      }
+
+      .open-all-confirm-actions .got-it-btn {
+        flex: 1;
+      }
+
+      .open-all-confirm-no {
+        background: #444;
+        color: #eee;
+      }
+
+      .advancement-toast {
+        position: fixed;
+        left: 50%;
+        bottom: 26px;
+        transform: translateX(-50%);
+        z-index: 80;
+        max-width: min(92vw, 420px);
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(20, 20, 20, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: #f2f2f2;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-align: center;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+        pointer-events: none;
+      }
+
+      .advancement-toast.hidden {
+        display: none;
+      }
+
+      .inventory-lucky-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .inventory-lucky-row .open-lucky-btn {
+        border: 0;
+        border-radius: 999px;
+        padding: 8px 14px;
+        cursor: pointer;
+        font-weight: 800;
+        background: #3bd16f;
+      }
+
+      .inventory-lucky-row .open-lucky-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .party-unwrap-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 91;
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      .party-unwrap-modal.hidden {
+        display: none;
+      }
+
+      .party-unwrap-card {
+        width: min(92vw, 380px);
+        background: #111;
+        color: #fff;
+        border: 1px solid #333;
+        border-radius: 16px;
+        padding: 20px 18px;
+        text-align: center;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+      }
+
+      .party-unwrap-card h3 {
+        margin: 0 0 14px;
+      }
+
+      .party-unwrap-stage {
+        position: relative;
+        height: 200px;
+        display: grid;
+        place-items: center;
+        margin-bottom: 12px;
+      }
+
+      .party-unwrap-box {
+        position: relative;
+        width: 120px;
+        height: 100px;
+        transform-origin: center bottom;
+      }
+
+      .party-unwrap-box.shake {
+        animation: partyBoxShake 0.55s ease-in-out 3;
+      }
+
+      .party-unwrap-box.opening .party-unwrap-lid {
+        animation: partyLidLift 0.65s ease-out forwards;
+      }
+
+      .party-unwrap-box.opening .party-unwrap-base {
+        animation: partyBasePop 0.5s ease-out 0.35s forwards;
+      }
+
+      @keyframes partyBoxShake {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        25% {
+          transform: rotate(-4deg);
+        }
+        75% {
+          transform: rotate(4deg);
+        }
+      }
+
+      @keyframes partyLidLift {
+        to {
+          transform: translateY(-72px) rotate(-18deg);
+          opacity: 0.35;
+        }
+      }
+
+      @keyframes partyBasePop {
+        to {
+          transform: scale(0.92);
+          opacity: 0.25;
+        }
+      }
+
+      .party-unwrap-lid {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 34px;
+        border-radius: 8px 8px 4px 4px;
+        background: linear-gradient(180deg, #ff69b4, #c2185b);
+        border: 3px solid #222;
+        z-index: 2;
+      }
+
+      .party-unwrap-base {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 72px;
+        border-radius: 4px 4px 10px 10px;
+        background: linear-gradient(180deg, #ffd54a, #f9a825);
+        border: 3px solid #222;
+      }
+
+      .party-unwrap-box.theme-normal .party-unwrap-lid {
+        background: linear-gradient(180deg, #9ecbff, #3b7dd8);
+      }
+
+      .party-unwrap-box.theme-normal .party-unwrap-base {
+        background: linear-gradient(180deg, #c792ea, #6a4c9c);
+      }
+
+      .party-unwrap-box.theme-golden .party-unwrap-lid {
+        background: linear-gradient(180deg, #fff9c4, #ffc107);
+      }
+
+      .party-unwrap-box.theme-golden .party-unwrap-base {
+        background: linear-gradient(180deg, #ffb300, #e65100);
+      }
+
+      .party-unwrap-box.theme-shiny .party-unwrap-lid {
+        background: linear-gradient(180deg, #e1f5fe, #4fc3f7);
+      }
+
+      .party-unwrap-box.theme-shiny .party-unwrap-base {
+        background: linear-gradient(180deg, #fff59d, #fdd835);
+        box-shadow: 0 0 18px rgba(255, 235, 59, 0.55);
+      }
+
+      .party-unwrap-box.theme-angel .party-unwrap-lid {
+        background: linear-gradient(180deg, #f3e5f5, #ce93d8);
+      }
+
+      .party-unwrap-box.theme-angel .party-unwrap-base {
+        background: linear-gradient(180deg, #fff8e1, #ffe082);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.65);
+      }
+
+      .party-unwrap-box.theme-corruption .party-unwrap-lid {
+        background: linear-gradient(180deg, #4a148c, #7b1fa2);
+      }
+
+      .party-unwrap-box.theme-corruption .party-unwrap-base {
+        background: linear-gradient(180deg, #311b92, #1a1a1a);
+        box-shadow: 0 0 24px rgba(156, 39, 176, 0.65);
+      }
+
+      .party-unwrap-reveal {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        opacity: 0;
+        transform: scale(0.5);
+        pointer-events: none;
+      }
+
+      .party-unwrap-stage:has(.party-unwrap-reveal.visible) .party-unwrap-box {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .party-unwrap-reveal.visible {
+        animation: partyRevealPop 0.55s cubic-bezier(0.2, 1.1, 0.3, 1) forwards;
+        pointer-events: auto;
+      }
+
+      @keyframes partyRevealPop {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .party-unwrap-reveal-inner {
+        padding: 14px 18px;
+        border-radius: 14px;
+        background: linear-gradient(145deg, #2a2a2a, #151515);
+        border: 2px solid #555;
+        min-width: 200px;
+      }
+
+      .party-unwrap-reveal-inner .pwr-name {
+        font-size: 1.05rem;
+        font-weight: 800;
+        margin: 0 0 6px;
+      }
+
+      .party-unwrap-reveal-inner .pwr-rarity {
+        margin: 0;
+        color: #9ecbff;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .party-unwrap-reveal-inner .pwr-bonus {
+        margin: 8px 0 0;
+        color: #3bd16f;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .powerup-catalog {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .powerup-item {
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 12px;
+        background: #1a1a1a;
+      }
+
+      .powerup-item.equipped {
+        border-color: #3bd16f;
+        box-shadow: 0 0 0 1px rgba(59, 209, 111, 0.35);
+      }
+
+      .powerup-item-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .powerup-item-head strong {
+        font-size: 0.95rem;
+      }
+
+      .powerup-rarity {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: #9ecbff;
+        white-space: nowrap;
+      }
+
+      .powerup-meta {
+        margin: 0 0 8px;
+        font-size: 0.78rem;
+        color: #aaa;
+        line-height: 1.35;
+      }
+
+      .powerup-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .powerup-owned {
+        font-size: 0.78rem;
+        color: #888;
+        flex: 1;
+      }
+
+      .powerup-equip-btn {
+        border: 0;
+        border-radius: 999px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 0.75rem;
+        background: #3bb8ff;
+        color: #111;
+      }
+
+      .powerup-equip-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .powerup-equip-btn.equipped-btn {
+        background: #3bd16f;
+        color: #111;
+      }
+
+      .powerup-empty {
+        list-style: none;
+        margin: 0;
+        padding: 12px 0;
+        color: #888;
+        font-size: 0.88rem;
+        line-height: 1.45;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="titleScreen" class="screen title-screen">
+      <section class="title-card">
+        <h1 class="game-title"><span class="red">Pokeball</span> Clicker</h1>
+        <button id="playBtn" class="play-btn" type="button">Play</button>
+        <p class="note">Tap play to start collecting Pokecoins.</p>
+        <p class="warning">Using an auto-clicker is a loss for yourself.</p>
+      </section>
+    </main>
+
+    <section id="gameScreen" class="screen game-screen hidden" aria-live="polite">
+      <button id="advancementsTab" class="advancements-badge" type="button" aria-label="Advancements"></button>
+      <div id="coinCounter" class="coin-counter">Pokecoins: 0</div>
+      <div id="rainbowCounter" class="rainbow-counter">
+        <div class="row">
+          <span class="label" id="rainbowCounterLabel">Rainbow Coins: 0</span>
+        </div>
+        <button id="exportRainbowBtn" class="export-btn" type="button">Export Rainbow Coins</button>
+      </div>
+      <button id="goldCoinBtn" class="gold-coin hidden" type="button" aria-label="Golden coin"></button>
+      <button id="pokeballBtn" class="pokeball-btn" type="button" aria-label="Click Pokeball"></button>
+      <button id="backpackBtn" class="backpack-btn" type="button" aria-label="Open backpack">🎒</button>
+      <div id="advancementToast" class="advancement-toast hidden" role="status" aria-live="polite"></div>
+      <button id="shopBtn" class="shop-btn" type="button" aria-label="Open shop">🛒</button>
+    </section>
+
+    <div id="advancementsModal" class="advancements-modal hidden">
+      <div class="advancements-card">
+        <div class="shop-header">
+          <h3>Advancements</h3>
+          <button id="closeAdvancementsBtn" class="close-btn-icon" type="button" aria-label="Close advancements">X</button>
+        </div>
+
+        <ul class="advancements-list">
+          <!-- White -->
+          <li
+            id="advancementGoldenCoiner"
+            class="advancement outline-white"
+            data-hint="Unlock Beginning in the shop so golden coins can spawn. Click golden coins 10 times total (each successful click counts)."
+          >
+            <span id="advancementGoldenCoinerCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">The Golden Coiner</span>
+          </li>
+          <!-- Green -->
+          <li
+            id="advancementRainbowNoob"
+            class="advancement outline-dark-green"
+            data-hint="Have more than 1 Rainbow Coin at the same time."
+          >
+            <span id="advancementRainbowNoobCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Rainbow Noob</span>
+          </li>
+          <li
+            id="advancementHomeless"
+            class="advancement outline-dark-green"
+            data-hint="At the same time: more than 10 Pokecoins but less than 1000; more than 2 Rainbow Coins but less than 100."
+          >
+            <span id="advancementHomelessCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">HoMeLeSs</span>
+          </li>
+          <li
+            id="advancementOneBarGold"
+            class="advancement outline-dark-green"
+            data-hint="Obtain a Pure Gold Chunk (craft 3 Pure Gold Fragments in the backpack crafting menu)."
+          >
+            <span id="advancementOneBarGoldCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">1 bar of gold</span>
+          </li>
+          <li id="advancementLuckyBlock" class="advancement outline-dark-green">
+            <span id="advancementLuckyBlockCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Lucky Block</span>
+          </li>
+          <li id="advancementPartyPrep" class="advancement outline-dark-green">
+            <span id="advancementPartyPrepCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Party Prep!</span>
+          </li>
+          <li id="advancementGettingUpgrade" class="advancement outline-dark-green">
+            <span id="advancementGettingUpgradeCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Getting an Upgrade</span>
+          </li>
+          <li id="advancementOhShiny" class="advancement outline-dark-green">
+            <span id="advancementOhShinyCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Oh Shiny!!!</span>
+          </li>
+          <li id="advancementLeftOurWorld" class="advancement outline-yellow">
+            <span id="advancementLeftOurWorldCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Have we left our world?</span>
+          </li>
+          <!-- Yellow -->
+          <li
+            id="advancementBeginnerMidas"
+            class="advancement outline-yellow"
+            data-hint="Own 4 Pure Gold Chunks at the same time (craft them from fragments in your backpack)."
+          >
+            <span id="advancementBeginnerMidasCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Beginner Midas</span>
+          </li>
+          <li
+            id="advancementMillionaire"
+            class="advancement outline-yellow"
+            data-hint="Have at least 1,000,000 Pokecoins at the same time."
+          >
+            <span id="advancementMillionaireCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Millionaire</span>
+          </li>
+          <li id="advancementPartyTime" class="advancement outline-yellow">
+            <span id="advancementPartyTimeCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Party Time!</span>
+          </li>
+          <li id="advancementMidasApprentice" class="advancement outline-yellow">
+            <span id="advancementMidasApprenticeCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Midas Apprentice</span>
+          </li>
+          <li id="advancementGleamEyes" class="advancement outline-yellow">
+            <span id="advancementGleamEyesCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">A Gleam In Its Eyes</span>
+          </li>
+          <li id="advancementAscendingGod" class="advancement outline-yellow">
+            <span id="advancementAscendingGodCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Ascending To GOD</span>
+          </li>
+          <!-- Red -->
+          <li id="advancementPartyMaster" class="advancement outline-red">
+            <span id="advancementPartyMasterCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Party Master</span>
+          </li>
+          <li id="advancementLeavingLiving" class="advancement outline-red">
+            <span id="advancementLeavingLivingCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">Leaving the living</span>
+          </li>
+          <!-- Purple -->
+          <li id="advancementGodOfAngels" class="advancement outline-purple">
+            <span id="advancementGodOfAngelsCheck" class="advancement-check hidden" aria-hidden="true">✓</span>
+            <span class="advancement-title">The God of all Angels</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="advDetailModal" class="adv-detail-modal hidden">
+      <div class="adv-detail-card">
+        <h4 id="advDetailTitle">Advancement</h4>
+        <p id="advDetailText"></p>
+        <p id="advDetailProgress" class="adv-detail-progress hidden"></p>
+        <button id="advDetailCloseBtn" class="got-it-btn" type="button">Got it</button>
+      </div>
+    </div>
+
+    <div id="openAllConfirmModal" class="adv-detail-modal hidden">
+      <div class="adv-detail-card">
+        <h4>Open all?</h4>
+        <p id="openAllConfirmText">Do you want to open all of them?</p>
+        <div class="open-all-confirm-actions">
+          <button id="openAllConfirmYes" class="got-it-btn" type="button">Yes</button>
+          <button id="openAllConfirmNo" class="got-it-btn open-all-confirm-no" type="button">No</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="equippedPokeballModal" class="equipped-pokeball-modal hidden">
+      <div class="equipped-pokeball-card">
+        <div class="shop-header">
+          <h3>Equipped Pokeball</h3>
+          <button id="closeEquippedPokeballBtn" class="close-btn-icon" type="button" aria-label="Close equipped pokeball menu">X</button>
+        </div>
+        <p class="equipped-pokeball-hint">Right-click the Pokeball to open this menu. Golden coin Great Ball buffs still apply temporarily.</p>
+        <ul class="equipped-pokeball-list">
+          <li>
+            <button id="equipNormalPokeballBtn" class="equipped-pokeball-option" type="button">
+              <span class="equipped-pokeball-preview normal" aria-hidden="true"></span>
+              <span class="equipped-pokeball-info">
+                <strong>Normal Pokeball</strong>
+                <span>+1 Pokecoin per click</span>
+              </span>
+              <span id="equippedNormalBadge" class="equipped-pokeball-badge hidden">Equipped</span>
+            </button>
+          </li>
+          <li>
+            <button id="equipGreatBallBtn" class="equipped-pokeball-option" type="button">
+              <span class="equipped-pokeball-preview great" aria-hidden="true"></span>
+              <span class="equipped-pokeball-info">
+                <strong>Great Ball</strong>
+                <span id="equipGreatBallHint">+2 Pokecoins per click — buy in shop first</span>
+              </span>
+              <span id="equippedGreatBadge" class="equipped-pokeball-badge hidden">Equipped</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="inventoryModal" class="inventory-modal hidden">
+      <div class="inventory-card">
+        <div class="inventory-tab-row" role="tablist" aria-label="Backpack sections">
+          <button
+            id="inventoryTabBackpack"
+            class="inventory-tab inventory-tab-active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+          >
+            Backpack
+          </button>
+          <button id="inventoryTabCrafting" class="inventory-tab" type="button" role="tab" aria-selected="false">
+            Crafting
+          </button>
+          <button id="inventoryTabPowerUps" class="inventory-tab" type="button" role="tab" aria-selected="false">
+            Power-ups
+          </button>
+        </div>
+
+        <div id="inventoryMainView" role="tabpanel">
+          <div class="shop-header">
+            <h2>Backpack</h2>
+            <button id="closeInventoryBtn" class="close-btn-icon" type="button" aria-label="Close backpack">X</button>
+          </div>
+
+          <div class="shop-section">
+            <h3>Counters</h3>
+            <p id="invPokecoins">Pokecoins: 0</p>
+            <p id="invRainbowCoins">Rainbow Coins: 0</p>
+            <p id="invGoldFragments">Pure Gold Fragments: 0</p>
+          </div>
+
+          <div class="shop-section">
+            <h3>Lucky Block</h3>
+            <div class="inventory-lucky-row">
+              <p id="invLuckyBlocks" style="margin: 0; flex: 1">Lucky Blocks: 0</p>
+              <button id="openLuckyBlockBtn" class="open-lucky-btn" type="button" disabled>Open</button>
+            </div>
+            <div class="inventory-lucky-row" style="margin-top: 10px">
+              <p id="invPartyLuckyBlocks" style="margin: 0; flex: 1">Party Lucky Blocks: 0</p>
+              <button id="openPartyLuckyBlockBtn" class="open-lucky-btn" type="button" disabled>Open</button>
+            </div>
+            <div id="goldenLuckyBlockInvRow" class="inventory-lucky-row hidden" style="margin-top: 10px">
+              <p id="invGoldenLuckyBlocks" style="margin: 0; flex: 1">Golden Lucky Blocks: 0</p>
+              <button id="openGoldenLuckyBlockBtn" class="open-lucky-btn" type="button" disabled>Open</button>
+            </div>
+            <div id="shinyLuckyBlockInvRow" class="inventory-lucky-row hidden" style="margin-top: 10px">
+              <p id="invShinyLuckyBlocks" style="margin: 0; flex: 1">Shiny Lucky Blocks: 0</p>
+              <button id="openShinyLuckyBlockBtn" class="open-lucky-btn" type="button" disabled>Open</button>
+            </div>
+            <div id="angelLuckyBlockInvRow" class="inventory-lucky-row hidden" style="margin-top: 10px">
+              <p id="invAngelLuckyBlocks" style="margin: 0; flex: 1">Angel Lucky Blocks: 0</p>
+              <button id="openAngelLuckyBlockBtn" class="open-lucky-btn" type="button" disabled>Open</button>
+            </div>
+            <div id="corruptionLuckyBlockInvRow" class="inventory-lucky-row hidden" style="margin-top: 10px">
+              <p id="invCorruptionLuckyBlocks" style="margin: 0; flex: 1">Corruption Lucky Blocks: 0</p>
+            </div>
+          </div>
+
+          <div class="shop-section">
+            <h3>Other random items</h3>
+            <p id="invGoldChunks">Pure Gold Chunks: 0</p>
+            <p id="invLightite">Lightite: 0</p>
+            <p id="invDiscoLights">Disco Lights: 0</p>
+            <p id="invGoldenHalo" class="hidden">Golden Halo: 0</p>
+            <p id="invAngelWings" class="hidden">Angel Wings: 0</p>
+          </div>
+        </div>
+
+        <div id="inventoryCraftingView" class="hidden" role="tabpanel">
+          <div class="shop-header">
+            <h2>Crafting</h2>
+            <button id="closeInventoryBtnCrafting" class="close-btn-icon" type="button" aria-label="Close crafting">
+              X
+            </button>
+          </div>
+
+          <div class="shop-section">
+            <h3>Pure Gold Chunk</h3>
+            <p>Combine 3 Pure Gold Fragments into 1 Pure Gold Chunk.</p>
+            <div class="shop-actions">
+              <button id="craftGoldChunkBtn" class="pay-btn" type="button">Craft (costs 3 fragments)</button>
+            </div>
+          </div>
+
+          <div class="shop-section">
+            <h3>Party Lucky Block</h3>
+            <p>2 Pure Gold Chunks + 1 Disco Light + 1 Lucky Block.</p>
+            <p style="margin-top: 6px; color: #999; font-size: 0.85rem; line-height: 1.35">
+              Opens with a wrap animation — drops musical power-ups.
+            </p>
+            <div class="shop-actions">
+              <button id="craftPartyLuckyBlockBtn" class="pay-btn" type="button">Craft Party Lucky Block</button>
+            </div>
+          </div>
+
+          <div id="craftShinyLuckyBlockSection" class="shop-section hidden">
+            <h3>Shiny Lucky Block</h3>
+            <p>1 Lightite + 1 Golden Halo + 1 Golden Lucky Block.</p>
+            <p style="margin-top: 6px; color: #999; font-size: 0.85rem; line-height: 1.35">
+              Opens with a wrap animation — drops shiny power-ups.
+            </p>
+            <div class="shop-actions">
+              <button id="craftShinyLuckyBlockBtn" class="pay-btn" type="button">Craft Shiny Lucky Block</button>
+            </div>
+          </div>
+
+          <div id="craftAngelLuckyBlockSection" class="shop-section hidden">
+            <h3>Angel Lucky Block</h3>
+            <p>1 Shiny Lucky Block + 1 Angel Wings.</p>
+            <p style="margin-top: 6px; color: #999; font-size: 0.85rem; line-height: 1.35">
+              Opens with a wrap animation — drops angel power-ups.
+            </p>
+            <div class="shop-actions">
+              <button id="craftAngelLuckyBlockBtn" class="pay-btn" type="button">Craft Angel Lucky Block</button>
+            </div>
+          </div>
+
+          <p id="craftStatus" class="shop-status" style="margin-top: 8px"></p>
+        </div>
+
+        <div id="inventoryPowerUpsView" class="hidden" role="tabpanel">
+          <div class="shop-header">
+            <h2>Power-ups</h2>
+            <button id="closeInventoryBtnPowerUps" class="close-btn-icon" type="button" aria-label="Close power-ups">
+              X
+            </button>
+          </div>
+          <div class="shop-section">
+            <p id="powerUpEquipHint" style="margin: 0 0 10px; color: #999; font-size: 0.82rem; line-height: 1.4">
+              Equip up to 2 at a time (no upgrades). Rarity is flair — drop odds are hidden.
+            </p>
+            <ul id="powerUpCatalog" class="powerup-catalog"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="partyUnwrapModal" class="party-unwrap-modal hidden">
+      <div class="party-unwrap-card">
+        <h3 id="partyUnwrapTitle">Lucky Block</h3>
+        <div class="party-unwrap-stage">
+          <div id="partyUnwrapBox" class="party-unwrap-box">
+            <div class="party-unwrap-lid"></div>
+            <div class="party-unwrap-base"></div>
+          </div>
+          <div id="partyUnwrapReveal" class="party-unwrap-reveal">
+            <div class="party-unwrap-reveal-inner">
+              <p class="pwr-name" id="partyUnwrapName">—</p>
+              <p class="pwr-rarity" id="partyUnwrapRarity">—</p>
+              <p class="pwr-bonus" id="partyUnwrapBonus">—</p>
+            </div>
+          </div>
+        </div>
+        <button id="partyUnwrapCloseBtn" class="got-it-btn" type="button" disabled>Got it</button>
+      </div>
+    </div>
+
+    <div id="exportModal" class="export-modal hidden">
+      <div class="export-card">
+        <div class="shop-header" style="margin-bottom: 10px">
+          <h3>Export Rainbow Coins</h3>
+          <button id="closeExportBtn" class="close-btn-icon" type="button" aria-label="Close export">X</button>
+        </div>
+        <div class="export-grid">
+          <input
+            id="exportAmountInput"
+            type="number"
+            min="1"
+            max="999"
+            inputmode="numeric"
+            placeholder="Amount (1-999)"
+          />
+          <div>
+            <div style="margin: 0 0 6px; color: #d7d7d7; font-size: 0.95rem">Generated code</div>
+            <div id="exportCodeBox" class="code-box"></div>
+          </div>
+          <div class="export-actions">
+            <button id="copyExportCodeBtn" class="export-secondary" type="button">Copy</button>
+            <button id="generateExportBtn" class="export-primary" type="button">Generate</button>
+          </div>
+          <div id="exportStatus" class="shop-status" style="margin-top: 0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="shopModal" class="shop-modal hidden">
+      <div class="shop-card">
+        <div class="shop-header">
+          <h2>Shop</h2>
+          <button id="closeShopBtn" class="close-btn-icon" type="button" aria-label="Close shop">X</button>
+        </div>
+
+        <div id="unlockSection" class="shop-section">
+          <h3>Unlock Shop</h3>
+          <p>Pay 300 Pokecoins to unlock.</p>
+          <div class="shop-actions">
+            <button id="payBtn" class="pay-btn" type="button">Pay 300</button>
+          </div>
+        </div>
+
+        <div id="itemsSection" class="shop-section hidden">
+          <h3>Items</h3>
+          <p>Beginning - 200 Pokecoins</p>
+          <div class="shop-actions">
+            <button id="buyBeginningBtn" class="pay-btn" type="button">Buy 200</button>
+          </div>
+        </div>
+
+        <div id="rainbowSection" class="shop-section hidden">
+          <h3>Rainbow Coins</h3>
+          <div id="rainbowLocked">
+            <p>Costs 1000 Pokecoins to unlock.</p>
+            <div class="shop-actions">
+              <button id="unlockRainbowBtn" class="pay-btn" type="button">Unlock 1000</button>
+            </div>
+          </div>
+
+          <div id="rainbowUnlocked" class="hidden">
+            <p>Unlocked. (Does nothing so far.)</p>
+            <div class="shop-actions" style="flex-wrap: wrap">
+              <button id="buyRainbow1Btn" class="pay-btn" type="button">1 Rainbow Coin (100)</button>
+              <button id="buyRainbow10Btn" class="pay-btn" type="button">10 Rainbow Coin (999)</button>
+              <button id="buyRainbowCrateBtn" class="pay-btn" type="button">Rainbow Coin Crate (500)</button>
+              <button id="buyRainbowLotteryBtn" class="pay-btn" type="button">Rainbow Lottery (700)</button>
+            </div>
+
+            <div id="lotteryPanel" class="hidden" style="margin-top: 12px">
+              <p style="margin: 0 0 10px">
+                Ticket: choose 3 numbers (1–10). Up to 5 tickets at a time.
+              </p>
+              <div class="shop-actions" style="flex-wrap: wrap">
+                <button id="n1Btn" class="close-btn" type="button">#1: -</button>
+                <button id="n2Btn" class="close-btn" type="button">#2: -</button>
+                <button id="n3Btn" class="close-btn" type="button">#3: -</button>
+              </div>
+              <div class="shop-actions" style="margin-top: 10px; flex-wrap: wrap">
+                <button id="addTicketBtn" class="pay-btn" type="button">Add Ticket (700)</button>
+                <button id="clearTicketsBtn" class="close-btn" type="button">Clear Tickets</button>
+                <button id="openTicketsBtn" class="pay-btn" type="button">Open Tickets</button>
+              </div>
+              <ol id="ticketList" class="lottery-ticket-list"></ol>
+            </div>
+          </div>
+        </div>
+
+        <div id="deeperStartSection" class="shop-section hidden">
+          <h3>Deeper into the start</h3>
+          <div id="deeperStartLocked">
+            <p>Pay 20,000 Pokecoins to unlock.</p>
+            <div class="shop-actions">
+              <button id="buyDeeperStartBtn" class="pay-btn" type="button">Pay 20,000</button>
+            </div>
+          </div>
+          <div id="deeperStartUnlocked" class="hidden">
+            <p>Unlocked.</p>
+            <div id="greatBallShopLocked" style="margin-top: 10px">
+              <p>Great Ball - 10,000 Pokecoins</p>
+              <div class="shop-actions">
+                <button id="buyGreatBallBtn" class="pay-btn" type="button">Buy 10,000</button>
+              </div>
+            </div>
+            <div id="greatBallShopOwned" class="hidden" style="margin-top: 10px">
+              <p>Great Ball owned (permanent).</p>
+            </div>
+            <div id="luckyBlockShopRow" style="margin-top: 12px">
+              <p>Lucky Block - 1,000 Pokecoins</p>
+              <p style="margin: 6px 0 0; color: #bbb; font-size: 0.85rem">Goes to your backpack. Open it there.</p>
+              <div class="shop-actions">
+                <button id="buyLuckyBlockBtn" class="pay-btn" type="button">Buy 1,000</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="deeperStart2Section" class="shop-section hidden">
+          <h3>Deeper into the start 2</h3>
+          <div id="deeperStart2Locked">
+            <p>Pay 75,000 Pokecoins to unlock.</p>
+            <p style="margin: 6px 0 0; color: #bbb; font-size: 0.85rem">Requires Deeper into the start.</p>
+            <div class="shop-actions">
+              <button id="buyDeeperStart2Btn" class="pay-btn" type="button">Pay 75,000</button>
+            </div>
+          </div>
+          <div id="deeperStart2Unlocked" class="hidden">
+            <p>Unlocked.</p>
+            <div id="goldenLuckyBlockShopRow" style="margin-top: 12px">
+              <p>Golden Lucky Block - 4,000 Pokecoins</p>
+              <p style="margin: 6px 0 0; color: #bbb; font-size: 0.85rem">Goes to your backpack. Open it there.</p>
+              <div class="shop-actions">
+                <button id="buyGoldenLuckyBlockBtn" class="pay-btn" type="button">Buy 4,000</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p id="shopStatus" class="shop-status"></p>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE_KEY = "pokeball_clicker_coins";
+      const RAINBOW_COINS_KEY = "pokeball_clicker_rainbow_coins";
+      const EXPORTED_CODES_KEY = "pokeball_clicker_exported_codes";
+      const SHOP_UNLOCKED_KEY = "pokeball_clicker_shop_unlocked";
+      const BEGINNING_BOUGHT_KEY = "pokeball_clicker_beginning_bought";
+      const RAINBOW_UNLOCKED_KEY = "pokeball_clicker_rainbow_unlocked";
+      const DEEPER_START_UNLOCKED_KEY = "pokeball_clicker_deeper_start_unlocked";
+      const DEEPER_START_2_UNLOCKED_KEY = "pokeball_clicker_deeper_start_2_unlocked";
+      const GREAT_BALL_PERMANENT_KEY = "pokeball_clicker_great_ball_permanent";
+      const LUCKY_BLOCKS_KEY = "pokeball_clicker_lucky_blocks";
+      const PARTY_LUCKY_BLOCKS_KEY = "pokeball_clicker_party_lucky_blocks";
+      const GOLDEN_LUCKY_BLOCKS_KEY = "pokeball_clicker_golden_lucky_blocks";
+      const SHINY_LUCKY_BLOCKS_KEY = "pokeball_clicker_shiny_lucky_blocks";
+      const ANGEL_LUCKY_BLOCKS_KEY = "pokeball_clicker_angel_lucky_blocks";
+      const CORRUPTION_LUCKY_BLOCKS_KEY = "pokeball_clicker_corruption_lucky_blocks";
+      const LIGHTITE_KEY = "pokeball_clicker_lightite";
+      const GOLDEN_HALO_KEY = "pokeball_clicker_golden_halo";
+      const ANGEL_WINGS_KEY = "pokeball_clicker_angel_wings";
+      const DISCO_LIGHTS_KEY = "pokeball_clicker_disco_lights";
+      const PURE_GOLD_FRAGMENTS_KEY = "pokeball_clicker_pure_gold_fragments";
+      const PURE_GOLD_CHUNKS_KEY = "pokeball_clicker_pure_gold_chunks";
+      const GOLDEN_COIN_CLICKS_KEY = "pokeball_clicker_golden_coin_clicks";
+      const ADVANCEMENTS_DONE_KEY = "pokeball_clicker_advancements_done";
+      const ADV_GOLDEN_COINER = "golden_coiner";
+      const ADV_RAINBOW_NOOB = "rainbow_noob";
+      const ADV_HOMELESS = "homeless";
+      const ADV_ONE_BAR_GOLD = "one_bar_of_gold";
+      const ADV_BEGINNER_MIDAS = "beginner_midas";
+      const BEGINNER_MIDAS_TARGET = 4;
+      const ADV_MILLIONAIRE = "millionaire";
+      const ADV_MILLIONAIRE_LEGACY = "millionare";
+      const ADV_LUCKY_BLOCK = "lucky_block";
+      const ADV_PARTY_PREP = "party_prep";
+      const ADV_PARTY_TIME = "party_time";
+      const ADV_PARTY_MASTER = "party_master";
+      const ADV_GETTING_UPGRADE = "getting_upgrade";
+      const ADV_MIDAS_APPRENTICE = "midas_apprentice";
+      const ADV_OH_SHINY = "oh_shiny";
+      const ADV_GLEAM_EYES = "gleam_eyes";
+      const ADV_LEFT_OUR_WORLD = "left_our_world";
+      const ADV_ASCENDING_GOD = "ascending_god";
+      const ADV_LEAVING_LIVING = "leaving_living";
+      const ADV_GOD_OF_ANGELS = "god_of_angels";
+      const MIDAS_APPRENTICE_CHUNKS = 30;
+      const MIDAS_APPRENTICE_GOLDEN_BLOCKS = 20;
+      const PARTY_MASTER_DISCO_TARGET = 100;
+      const LEAVING_LIVING_ANGEL_BLOCKS = 11;
+      const GOD_OF_ANGELS_BLOCKS = 101;
+      const MILLIONAIRE_POKECOINS = 1000000;
+      const DEEPER_START_COST = 20000;
+      const DEEPER_START_2_COST = 75000;
+      const GREAT_BALL_COST = 10000;
+      const LUCKY_BLOCK_COST = 1000;
+      const GOLDEN_LUCKY_BLOCK_COST = 4000;
+      const UNIFIED_SAVE_KEY = "pokeball_clicker_unified_save";
+      const SAVE_SCHEMA_VERSION = 11;
+      const BASE_POWER_UP_EQUIP_SLOTS = 2;
+
+      /** Display rarity vs hidden dropWeight (sums to 100). */
+      const POWER_UPS = [
+        { id: "musical", name: "Musical", rarityOneIn: 40, dropWeight: 30, clickBonus: 1 },
+        { id: "violen_performer", name: "Violen performer", rarityOneIn: 40, dropWeight: 30, clickBonus: 1 },
+        { id: "forte", name: "Forte", rarityOneIn: 60, dropWeight: 20, clickBonus: 2 },
+        { id: "polyrhythm", name: "Polyrhythm", rarityOneIn: 75, dropWeight: 15, clickBonus: 3 },
+        { id: "subito_forte", name: "Subito Forte", rarityOneIn: 100, dropWeight: 4.5, clickBonus: 5 },
+        { id: "musical_god", name: "Musical GOD", rarityOneIn: 1000, dropWeight: 0.5, clickBonus: 8 },
+      ];
+
+      const SHINY_POWER_UPS = [
+        { id: "shiny", name: "Shiny", rarityOneIn: 35, dropWeight: 40, clickBonus: 0.5, halfClick: true },
+        { id: "sunshine", name: "Sunshine", rarityOneIn: 45, dropWeight: 30, clickBonus: 1 },
+        { id: "rays", name: "Rays", rarityOneIn: 55, dropWeight: 15, clickBonus: 2 },
+        { id: "flash", name: "Flash", rarityOneIn: 70, dropWeight: 10, clickBonus: 4 },
+        { id: "gleam", name: "Gleam", rarityOneIn: 95, dropWeight: 5, clickBonus: 6 },
+      ];
+
+      const ANGEL_POWER_UPS = [
+        { id: "pwr_halo", name: "Halo", rarityOneIn: 85, dropWeight: 30, clickBonus: 2 },
+        { id: "pwr_angel", name: "Angel", rarityOneIn: 85, dropWeight: 30, clickBonus: 2 },
+        { id: "pwr_angel_spear", name: "Angel Spear", rarityOneIn: 100, dropWeight: 20, clickBonus: 3 },
+        { id: "pwr_heaven", name: "Heaven", rarityOneIn: 140, dropWeight: 12, clickBonus: 5 },
+        { id: "pwr_ascension", name: "Ascension", rarityOneIn: 170, dropWeight: 5, clickBonus: 7 },
+        { id: "pwr_heavenly", name: "Heavenly", rarityOneIn: 1050, dropWeight: 1, clickBonus: 10 },
+      ];
+      const titleScreen = document.getElementById("titleScreen");
+      const gameScreen = document.getElementById("gameScreen");
+      const playBtn = document.getElementById("playBtn");
+      const pokeballBtn = document.getElementById("pokeballBtn");
+      const coinCounter = document.getElementById("coinCounter");
+      const rainbowCounterLabel = document.getElementById("rainbowCounterLabel");
+      const goldCoinBtn = document.getElementById("goldCoinBtn");
+      const backpackBtn = document.getElementById("backpackBtn");
+      const exportRainbowBtn = document.getElementById("exportRainbowBtn");
+      const exportModal = document.getElementById("exportModal");
+      const closeExportBtn = document.getElementById("closeExportBtn");
+      const exportAmountInput = document.getElementById("exportAmountInput");
+      const exportCodeBox = document.getElementById("exportCodeBox");
+      const copyExportCodeBtn = document.getElementById("copyExportCodeBtn");
+      const generateExportBtn = document.getElementById("generateExportBtn");
+      const exportStatus = document.getElementById("exportStatus");
+      const inventoryModal = document.getElementById("inventoryModal");
+      const closeInventoryBtn = document.getElementById("closeInventoryBtn");
+      const invPokecoins = document.getElementById("invPokecoins");
+      const invRainbowCoins = document.getElementById("invRainbowCoins");
+      const invGoldFragments = document.getElementById("invGoldFragments");
+      const invGoldChunks = document.getElementById("invGoldChunks");
+      const invLuckyBlocks = document.getElementById("invLuckyBlocks");
+      const invPartyLuckyBlocks = document.getElementById("invPartyLuckyBlocks");
+      const invGoldenLuckyBlocks = document.getElementById("invGoldenLuckyBlocks");
+      const goldenLuckyBlockInvRow = document.getElementById("goldenLuckyBlockInvRow");
+      const invLightite = document.getElementById("invLightite");
+      const invDiscoLights = document.getElementById("invDiscoLights");
+      const invGoldenHalo = document.getElementById("invGoldenHalo");
+      const invAngelWings = document.getElementById("invAngelWings");
+      const openLuckyBlockBtn = document.getElementById("openLuckyBlockBtn");
+      const openPartyLuckyBlockBtn = document.getElementById("openPartyLuckyBlockBtn");
+      const openGoldenLuckyBlockBtn = document.getElementById("openGoldenLuckyBlockBtn");
+      const openShinyLuckyBlockBtn = document.getElementById("openShinyLuckyBlockBtn");
+      const invShinyLuckyBlocks = document.getElementById("invShinyLuckyBlocks");
+      const shinyLuckyBlockInvRow = document.getElementById("shinyLuckyBlockInvRow");
+      const invAngelLuckyBlocks = document.getElementById("invAngelLuckyBlocks");
+      const angelLuckyBlockInvRow = document.getElementById("angelLuckyBlockInvRow");
+      const openAngelLuckyBlockBtn = document.getElementById("openAngelLuckyBlockBtn");
+      const invCorruptionLuckyBlocks = document.getElementById("invCorruptionLuckyBlocks");
+      const corruptionLuckyBlockInvRow = document.getElementById("corruptionLuckyBlockInvRow");
+      const buyLuckyBlockBtn = document.getElementById("buyLuckyBlockBtn");
+      const buyGoldenLuckyBlockBtn = document.getElementById("buyGoldenLuckyBlockBtn");
+      const partyUnwrapModal = document.getElementById("partyUnwrapModal");
+      const partyUnwrapTitle = document.getElementById("partyUnwrapTitle");
+      const partyUnwrapBox = document.getElementById("partyUnwrapBox");
+      const partyUnwrapReveal = document.getElementById("partyUnwrapReveal");
+      const partyUnwrapName = document.getElementById("partyUnwrapName");
+      const partyUnwrapRarity = document.getElementById("partyUnwrapRarity");
+      const partyUnwrapBonus = document.getElementById("partyUnwrapBonus");
+      const partyUnwrapCloseBtn = document.getElementById("partyUnwrapCloseBtn");
+      const inventoryMainView = document.getElementById("inventoryMainView");
+      const inventoryCraftingView = document.getElementById("inventoryCraftingView");
+      const inventoryPowerUpsView = document.getElementById("inventoryPowerUpsView");
+      const inventoryTabBackpack = document.getElementById("inventoryTabBackpack");
+      const inventoryTabCrafting = document.getElementById("inventoryTabCrafting");
+      const inventoryTabPowerUps = document.getElementById("inventoryTabPowerUps");
+      const closeInventoryBtnCrafting = document.getElementById("closeInventoryBtnCrafting");
+      const closeInventoryBtnPowerUps = document.getElementById("closeInventoryBtnPowerUps");
+      const powerUpCatalog = document.getElementById("powerUpCatalog");
+      const craftGoldChunkBtn = document.getElementById("craftGoldChunkBtn");
+      const craftPartyLuckyBlockBtn = document.getElementById("craftPartyLuckyBlockBtn");
+      const craftShinyLuckyBlockBtn = document.getElementById("craftShinyLuckyBlockBtn");
+      const craftShinyLuckyBlockSection = document.getElementById("craftShinyLuckyBlockSection");
+      const craftAngelLuckyBlockBtn = document.getElementById("craftAngelLuckyBlockBtn");
+      const craftAngelLuckyBlockSection = document.getElementById("craftAngelLuckyBlockSection");
+      const craftStatus = document.getElementById("craftStatus");
+      const advancementsTab = document.getElementById("advancementsTab");
+      const advancementsModal = document.getElementById("advancementsModal");
+      const closeAdvancementsBtn = document.getElementById("closeAdvancementsBtn");
+      const advancementToast = document.getElementById("advancementToast");
+      const advDetailModal = document.getElementById("advDetailModal");
+      const advDetailTitle = document.getElementById("advDetailTitle");
+      const advDetailText = document.getElementById("advDetailText");
+      const advDetailProgress = document.getElementById("advDetailProgress");
+      const advDetailCloseBtn = document.getElementById("advDetailCloseBtn");
+      const openAllConfirmModal = document.getElementById("openAllConfirmModal");
+      const openAllConfirmText = document.getElementById("openAllConfirmText");
+      const openAllConfirmYes = document.getElementById("openAllConfirmYes");
+      const openAllConfirmNo = document.getElementById("openAllConfirmNo");
+      const equippedPokeballModal = document.getElementById("equippedPokeballModal");
+      const closeEquippedPokeballBtn = document.getElementById("closeEquippedPokeballBtn");
+      const equipNormalPokeballBtn = document.getElementById("equipNormalPokeballBtn");
+      const equipGreatBallBtn = document.getElementById("equipGreatBallBtn");
+      const equippedNormalBadge = document.getElementById("equippedNormalBadge");
+      const equippedGreatBadge = document.getElementById("equippedGreatBadge");
+      const equipGreatBallHint = document.getElementById("equipGreatBallHint");
+      const shopBtn = document.getElementById("shopBtn");
+      const shopModal = document.getElementById("shopModal");
+      const payBtn = document.getElementById("payBtn");
+      const closeShopBtn = document.getElementById("closeShopBtn");
+      const shopStatus = document.getElementById("shopStatus");
+      const unlockSection = document.getElementById("unlockSection");
+      const itemsSection = document.getElementById("itemsSection");
+      const buyBeginningBtn = document.getElementById("buyBeginningBtn");
+      const rainbowSection = document.getElementById("rainbowSection");
+      const deeperStartSection = document.getElementById("deeperStartSection");
+      const deeperStartLocked = document.getElementById("deeperStartLocked");
+      const deeperStartUnlockedEl = document.getElementById("deeperStartUnlocked");
+      const buyDeeperStartBtn = document.getElementById("buyDeeperStartBtn");
+      const deeperStart2Section = document.getElementById("deeperStart2Section");
+      const deeperStart2Locked = document.getElementById("deeperStart2Locked");
+      const deeperStart2UnlockedEl = document.getElementById("deeperStart2Unlocked");
+      const buyDeeperStart2Btn = document.getElementById("buyDeeperStart2Btn");
+      const greatBallShopLocked = document.getElementById("greatBallShopLocked");
+      const greatBallShopOwned = document.getElementById("greatBallShopOwned");
+      const buyGreatBallBtn = document.getElementById("buyGreatBallBtn");
+      const rainbowLocked = document.getElementById("rainbowLocked");
+      const rainbowUnlocked = document.getElementById("rainbowUnlocked");
+      const unlockRainbowBtn = document.getElementById("unlockRainbowBtn");
+      const buyRainbow1Btn = document.getElementById("buyRainbow1Btn");
+      const buyRainbow10Btn = document.getElementById("buyRainbow10Btn");
+      const buyRainbowCrateBtn = document.getElementById("buyRainbowCrateBtn");
+      const buyRainbowLotteryBtn = document.getElementById("buyRainbowLotteryBtn");
+      const lotteryPanel = document.getElementById("lotteryPanel");
+      const n1Btn = document.getElementById("n1Btn");
+      const n2Btn = document.getElementById("n2Btn");
+      const n3Btn = document.getElementById("n3Btn");
+      const addTicketBtn = document.getElementById("addTicketBtn");
+      const clearTicketsBtn = document.getElementById("clearTicketsBtn");
+      const openTicketsBtn = document.getElementById("openTicketsBtn");
+      const ticketList = document.getElementById("ticketList");
+
+      function loadCoins() {
+        const saved = Number(localStorage.getItem(STORAGE_KEY));
+        return Number.isFinite(saved) && saved >= 0 ? saved : 0;
+      }
+
+      function loadRainbowCoins() {
+        const saved = Number(localStorage.getItem(RAINBOW_COINS_KEY));
+        return Number.isFinite(saved) && saved >= 0 ? saved : 0;
+      }
+
+      function loadGoldFragments() {
+        const saved = Number(localStorage.getItem(PURE_GOLD_FRAGMENTS_KEY));
+        return Number.isFinite(saved) && saved >= 0 ? saved : 0;
+      }
+
+      function loadGoldChunks() {
+        const saved = Number(localStorage.getItem(PURE_GOLD_CHUNKS_KEY));
+        return Number.isFinite(saved) && saved >= 0 ? saved : 0;
+      }
+
+      function loadGoldenCoinClicks() {
+        const saved = Number(localStorage.getItem(GOLDEN_COIN_CLICKS_KEY));
+        return Number.isFinite(saved) && saved >= 0 ? saved : 0;
+      }
+
+      function loadAdvancementsDone() {
+        try {
+          const raw = localStorage.getItem(ADVANCEMENTS_DONE_KEY);
+          if (!raw) return new Set();
+          const arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) return new Set();
+          return new Set(arr.filter((x) => typeof x === "string"));
+        } catch {
+          return new Set();
+        }
+      }
+
+      function saveAdvancementsDone(set) {
+        localStorage.setItem(ADVANCEMENTS_DONE_KEY, JSON.stringify(Array.from(set)));
+        persistUnifiedSave();
+      }
+
+      const advancementsDone = new Set();
+      const usedExportCodes = new Set();
+
+      let coins = 0;
+      let rainbowCoins = 0;
+      let goldFragments = 0;
+      let goldChunks = 0;
+      let goldenCoinClicks = 0;
+      let shopUnlocked = false;
+      let beginningBought = false;
+      let rainbowUnlockedFlag = false;
+      let deeperStartUnlocked = false;
+      let deeperStart2Unlocked = false;
+      let greatBallPermanent = false;
+      let equippedPokeball = "normal";
+      let luckyBlocks = 0;
+      let partyLuckyBlocks = 0;
+      let goldenLuckyBlocks = 0;
+      let shinyLuckyBlocks = 0;
+      let angelLuckyBlocks = 0;
+      let corruptionLuckyBlocks = 0;
+      let corruptionClickProgress = 0;
+      let corruptionPokeballActive = false;
+      const CORRUPTION_CLICKS_TARGET = 4000;
+      let lightite = 0;
+      let shinyPokeballClickCount = 0;
+      let discoLights = 0;
+      let goldenHalo = 0;
+      let angelWings = 0;
+      let equippedPowerUpIds = [];
+      let ownedPowerUps = createDefaultOwnedPowerUps();
+
+      function getAllPowerUpDefs() {
+        return [...POWER_UPS, ...SHINY_POWER_UPS, ...ANGEL_POWER_UPS];
+      }
+
+      function createDefaultOwnedPowerUps() {
+        const o = {};
+        for (const p of getAllPowerUpDefs()) o[p.id] = 0;
+        return o;
+      }
+
+      function getPowerUpDef(id) {
+        return getAllPowerUpDefs().find((p) => p.id === id) || null;
+      }
+
+      function mergeOwnedPowerUps(saved) {
+        const o = createDefaultOwnedPowerUps();
+        if (saved && typeof saved === "object") {
+          for (const p of getAllPowerUpDefs()) {
+            o[p.id] = clampNonNegNum(saved[p.id]);
+          }
+        }
+        return o;
+      }
+
+      function getMaxEquippedPowerUps() {
+        return BASE_POWER_UP_EQUIP_SLOTS;
+      }
+
+      function sanitizeEquippedPowerUpIds(rawIds, owned) {
+        const max = getMaxEquippedPowerUps();
+        const out = [];
+        const seen = new Set();
+        const list = Array.isArray(rawIds)
+          ? rawIds
+          : typeof rawIds === "string" && rawIds
+            ? [rawIds]
+            : [];
+        for (const id of list) {
+          if (typeof id !== "string" || !getPowerUpDef(id)) continue;
+          if (seen.has(id)) continue;
+          if (clampNonNegNum(owned[id]) < 1) continue;
+          out.push(id);
+          seen.add(id);
+          if (out.length >= max) break;
+        }
+        return out;
+      }
+
+      function clampNonNegNum(n) {
+        const x = Number(n);
+        return Number.isFinite(x) && x >= 0 ? x : 0;
+      }
+
+      function migrateUnifiedSavePayload(data) {
+        if (!data || typeof data !== "object") return null;
+        let v = typeof data.schemaVersion === "number" ? data.schemaVersion : 0;
+        while (v < SAVE_SCHEMA_VERSION) {
+          v += 1;
+          if (v === 2) {
+            data.luckyBlocks = clampNonNegNum(data.luckyBlocks ?? 0);
+            data.lightite = clampNonNegNum(data.lightite ?? 0);
+            data.discoLights = clampNonNegNum(data.discoLights ?? 0);
+          }
+          if (v === 3) {
+            data.partyLuckyBlocks = clampNonNegNum(data.partyLuckyBlocks ?? 0);
+          }
+          if (v === 4) {
+            data.ownedPowerUps = mergeOwnedPowerUps(data.ownedPowerUps);
+            data.equippedPowerUpId =
+              typeof data.equippedPowerUpId === "string" && getPowerUpDef(data.equippedPowerUpId)
+                ? data.equippedPowerUpId
+                : null;
+          }
+          if (v === 5) {
+            const owned = mergeOwnedPowerUps(data.ownedPowerUps);
+            const raw = Array.isArray(data.equippedPowerUpIds)
+              ? data.equippedPowerUpIds
+              : typeof data.equippedPowerUpId === "string" && data.equippedPowerUpId
+                ? [data.equippedPowerUpId]
+                : [];
+            data.equippedPowerUpIds = sanitizeEquippedPowerUpIds(raw, owned);
+            delete data.equippedPowerUpId;
+          }
+          if (v === 6) {
+            data.deeperStart2Unlocked = Boolean(data.deeperStart2Unlocked);
+            data.goldenLuckyBlocks = clampNonNegNum(data.goldenLuckyBlocks ?? 0);
+            data.goldenHalo = clampNonNegNum(data.goldenHalo ?? 0);
+            data.angelWings = clampNonNegNum(data.angelWings ?? 0);
+          }
+          if (v === 7) {
+            data.shinyLuckyBlocks = clampNonNegNum(data.shinyLuckyBlocks ?? 0);
+            data.ownedPowerUps = mergeOwnedPowerUps(data.ownedPowerUps);
+          }
+          if (v === 8) {
+            data.angelLuckyBlocks = clampNonNegNum(data.angelLuckyBlocks ?? 0);
+            data.ownedPowerUps = mergeOwnedPowerUps(data.ownedPowerUps);
+          }
+          if (v === 9) {
+            if (data.equippedPokeball !== "normal" && data.equippedPokeball !== "great") {
+              data.equippedPokeball = data.greatBallPermanent ? "great" : "normal";
+            } else if (data.equippedPokeball === "great" && !data.greatBallPermanent) {
+              data.equippedPokeball = "normal";
+            }
+          }
+          if (v === 10) {
+            data.corruptionLuckyBlocks = clampNonNegNum(data.corruptionLuckyBlocks ?? 0);
+          }
+          if (v === 11) {
+            data.corruptionClickProgress = clampNonNegNum(data.corruptionClickProgress ?? 0);
+          }
+        }
+        if (typeof data.schemaVersion !== "number" || data.schemaVersion < SAVE_SCHEMA_VERSION) {
+          data.schemaVersion = SAVE_SCHEMA_VERSION;
+        }
+        data.luckyBlocks = clampNonNegNum(data.luckyBlocks ?? 0);
+        data.partyLuckyBlocks = clampNonNegNum(data.partyLuckyBlocks ?? 0);
+        data.lightite = clampNonNegNum(data.lightite ?? 0);
+        data.discoLights = clampNonNegNum(data.discoLights ?? 0);
+        data.ownedPowerUps = mergeOwnedPowerUps(data.ownedPowerUps);
+        const rawEquipped = Array.isArray(data.equippedPowerUpIds)
+          ? data.equippedPowerUpIds
+          : typeof data.equippedPowerUpId === "string" && data.equippedPowerUpId
+            ? [data.equippedPowerUpId]
+            : [];
+        data.equippedPowerUpIds = sanitizeEquippedPowerUpIds(rawEquipped, data.ownedPowerUps);
+        delete data.equippedPowerUpId;
+        data.deeperStart2Unlocked = Boolean(data.deeperStart2Unlocked);
+        data.goldenLuckyBlocks = clampNonNegNum(data.goldenLuckyBlocks ?? 0);
+        data.shinyLuckyBlocks = clampNonNegNum(data.shinyLuckyBlocks ?? 0);
+        data.angelLuckyBlocks = clampNonNegNum(data.angelLuckyBlocks ?? 0);
+        data.goldenHalo = clampNonNegNum(data.goldenHalo ?? 0);
+        data.angelWings = clampNonNegNum(data.angelWings ?? 0);
+        data.corruptionLuckyBlocks = clampNonNegNum(data.corruptionLuckyBlocks ?? 0);
+        data.corruptionClickProgress = clampNonNegNum(data.corruptionClickProgress ?? 0);
+        data.equippedPokeball = sanitizeEquippedPokeball(data.equippedPokeball, data.greatBallPermanent);
+        return data;
+      }
+
+      function sanitizeEquippedPokeball(value, ownsGreatBall) {
+        if (value === "great" && ownsGreatBall) return "great";
+        return "normal";
+      }
+
+      function buildUnifiedPayload() {
+        let schemaOut = SAVE_SCHEMA_VERSION;
+        try {
+          const prev = localStorage.getItem(UNIFIED_SAVE_KEY);
+          if (prev) {
+            const o = JSON.parse(prev);
+            if (o && typeof o.schemaVersion === "number" && o.schemaVersion > schemaOut) {
+              schemaOut = o.schemaVersion;
+            }
+          }
+        } catch (e) {}
+        return {
+          schemaVersion: schemaOut,
+          coins,
+          rainbowCoins,
+          goldFragments,
+          goldChunks,
+          goldenCoinClicks,
+          advancementsDone: Array.from(advancementsDone),
+          usedExportCodes: Array.from(usedExportCodes),
+          shopUnlocked,
+          beginningBought,
+          rainbowUnlockedFlag,
+          deeperStartUnlocked,
+          deeperStart2Unlocked,
+          greatBallPermanent,
+          equippedPokeball,
+          luckyBlocks,
+          partyLuckyBlocks,
+          goldenLuckyBlocks,
+          shinyLuckyBlocks,
+          angelLuckyBlocks,
+          corruptionLuckyBlocks,
+          corruptionClickProgress,
+          lightite,
+          discoLights,
+          goldenHalo,
+          angelWings,
+          ownedPowerUps,
+          equippedPowerUpIds,
+        };
+      }
+
+      function syncMirrorLegacyKeys() {
+        localStorage.setItem(STORAGE_KEY, String(coins));
+        localStorage.setItem(RAINBOW_COINS_KEY, String(rainbowCoins));
+        localStorage.setItem(PURE_GOLD_FRAGMENTS_KEY, String(goldFragments));
+        localStorage.setItem(PURE_GOLD_CHUNKS_KEY, String(goldChunks));
+        localStorage.setItem(GOLDEN_COIN_CLICKS_KEY, String(goldenCoinClicks));
+        localStorage.setItem(ADVANCEMENTS_DONE_KEY, JSON.stringify(Array.from(advancementsDone)));
+        localStorage.setItem(EXPORTED_CODES_KEY, JSON.stringify(Array.from(usedExportCodes)));
+        localStorage.setItem(SHOP_UNLOCKED_KEY, shopUnlocked ? "true" : "false");
+        localStorage.setItem(BEGINNING_BOUGHT_KEY, beginningBought ? "true" : "false");
+        localStorage.setItem(RAINBOW_UNLOCKED_KEY, rainbowUnlockedFlag ? "true" : "false");
+        localStorage.setItem(DEEPER_START_UNLOCKED_KEY, deeperStartUnlocked ? "true" : "false");
+        localStorage.setItem(DEEPER_START_2_UNLOCKED_KEY, deeperStart2Unlocked ? "true" : "false");
+        localStorage.setItem(GREAT_BALL_PERMANENT_KEY, greatBallPermanent ? "true" : "false");
+        localStorage.setItem(LUCKY_BLOCKS_KEY, String(luckyBlocks));
+        localStorage.setItem(PARTY_LUCKY_BLOCKS_KEY, String(partyLuckyBlocks));
+        localStorage.setItem(GOLDEN_LUCKY_BLOCKS_KEY, String(goldenLuckyBlocks));
+        localStorage.setItem(SHINY_LUCKY_BLOCKS_KEY, String(shinyLuckyBlocks));
+        localStorage.setItem(ANGEL_LUCKY_BLOCKS_KEY, String(angelLuckyBlocks));
+        localStorage.setItem(CORRUPTION_LUCKY_BLOCKS_KEY, String(corruptionLuckyBlocks));
+        localStorage.setItem(LIGHTITE_KEY, String(lightite));
+        localStorage.setItem(DISCO_LIGHTS_KEY, String(discoLights));
+        localStorage.setItem(GOLDEN_HALO_KEY, String(goldenHalo));
+        localStorage.setItem(ANGEL_WINGS_KEY, String(angelWings));
+      }
+
+      function persistUnifiedSave() {
+        try {
+          const payload = buildUnifiedPayload();
+          localStorage.setItem(UNIFIED_SAVE_KEY, JSON.stringify(payload));
+          syncMirrorLegacyKeys();
+        } catch (e) {
+          console.warn("Pokeball Clicker: could not persist save", e);
+        }
+      }
+
+      function tryLoadUnifiedSave() {
+        try {
+          const raw = localStorage.getItem(UNIFIED_SAVE_KEY);
+          if (!raw) return false;
+          let data = JSON.parse(raw);
+          data = migrateUnifiedSavePayload(data);
+          if (!data) return false;
+          const looksLikeUnified =
+            "coins" in data ||
+            "rainbowCoins" in data ||
+            "advancementsDone" in data ||
+            "shopUnlocked" in data ||
+            typeof data.schemaVersion === "number";
+          if (!looksLikeUnified) return false;
+          coins = clampNonNegNum(data.coins);
+          rainbowCoins = clampNonNegNum(data.rainbowCoins);
+          goldFragments = clampNonNegNum(data.goldFragments);
+          goldChunks = clampNonNegNum(data.goldChunks);
+          goldenCoinClicks = clampNonNegNum(data.goldenCoinClicks);
+          advancementsDone.clear();
+          for (const id of data.advancementsDone || []) {
+            if (typeof id === "string") advancementsDone.add(id);
+          }
+          usedExportCodes.clear();
+          for (const c of data.usedExportCodes || []) {
+            if (typeof c === "string") usedExportCodes.add(c);
+          }
+          shopUnlocked = Boolean(data.shopUnlocked);
+          beginningBought = Boolean(data.beginningBought);
+          rainbowUnlockedFlag = Boolean(data.rainbowUnlockedFlag);
+          deeperStartUnlocked = Boolean(data.deeperStartUnlocked);
+          deeperStart2Unlocked = Boolean(data.deeperStart2Unlocked);
+          greatBallPermanent = Boolean(data.greatBallPermanent);
+          equippedPokeball = sanitizeEquippedPokeball(data.equippedPokeball, greatBallPermanent);
+          luckyBlocks = clampNonNegNum(data.luckyBlocks);
+          partyLuckyBlocks = clampNonNegNum(data.partyLuckyBlocks);
+          goldenLuckyBlocks = clampNonNegNum(data.goldenLuckyBlocks);
+          shinyLuckyBlocks = clampNonNegNum(data.shinyLuckyBlocks);
+          angelLuckyBlocks = clampNonNegNum(data.angelLuckyBlocks);
+          corruptionLuckyBlocks = clampNonNegNum(data.corruptionLuckyBlocks);
+          corruptionClickProgress = clampNonNegNum(data.corruptionClickProgress);
+          lightite = clampNonNegNum(data.lightite);
+          discoLights = clampNonNegNum(data.discoLights);
+          goldenHalo = clampNonNegNum(data.goldenHalo);
+          angelWings = clampNonNegNum(data.angelWings);
+          ownedPowerUps = mergeOwnedPowerUps(data.ownedPowerUps);
+          const rawEquipped = Array.isArray(data.equippedPowerUpIds)
+            ? data.equippedPowerUpIds
+            : typeof data.equippedPowerUpId === "string" && data.equippedPowerUpId
+              ? [data.equippedPowerUpId]
+              : [];
+          equippedPowerUpIds = sanitizeEquippedPowerUpIds(rawEquipped, ownedPowerUps);
+          return true;
+        } catch (e) {
+          console.warn("Pokeball Clicker: unified save unreadable, using legacy keys", e);
+          return false;
+        }
+      }
+
+      function loadIntKey(key) {
+        const saved = Number(localStorage.getItem(key));
+        return Number.isFinite(saved) && saved >= 0 ? saved : 0;
+      }
+
+      function loadLegacyGameState() {
+        coins = loadCoins();
+        rainbowCoins = loadRainbowCoins();
+        goldFragments = loadGoldFragments();
+        goldChunks = loadGoldChunks();
+        goldenCoinClicks = loadGoldenCoinClicks();
+        for (const id of loadAdvancementsDone()) advancementsDone.add(id);
+        for (const c of loadUsedExportCodes()) usedExportCodes.add(c);
+        shopUnlocked = loadFlag(SHOP_UNLOCKED_KEY);
+        beginningBought = loadFlag(BEGINNING_BOUGHT_KEY);
+        rainbowUnlockedFlag = loadFlag(RAINBOW_UNLOCKED_KEY);
+        deeperStartUnlocked = loadFlag(DEEPER_START_UNLOCKED_KEY);
+        deeperStart2Unlocked = loadFlag(DEEPER_START_2_UNLOCKED_KEY);
+        greatBallPermanent = loadFlag(GREAT_BALL_PERMANENT_KEY);
+        equippedPokeball = greatBallPermanent ? "great" : "normal";
+        luckyBlocks = loadIntKey(LUCKY_BLOCKS_KEY);
+        partyLuckyBlocks = loadIntKey(PARTY_LUCKY_BLOCKS_KEY);
+        goldenLuckyBlocks = loadIntKey(GOLDEN_LUCKY_BLOCKS_KEY);
+        shinyLuckyBlocks = loadIntKey(SHINY_LUCKY_BLOCKS_KEY);
+        angelLuckyBlocks = loadIntKey(ANGEL_LUCKY_BLOCKS_KEY);
+        corruptionLuckyBlocks = loadIntKey(CORRUPTION_LUCKY_BLOCKS_KEY);
+        lightite = loadIntKey(LIGHTITE_KEY);
+        discoLights = loadIntKey(DISCO_LIGHTS_KEY);
+        goldenHalo = loadIntKey(GOLDEN_HALO_KEY);
+        angelWings = loadIntKey(ANGEL_WINGS_KEY);
+        ownedPowerUps = createDefaultOwnedPowerUps();
+        equippedPowerUpIds = [];
+      }
+
+      function initPersistence() {
+        if (!tryLoadUnifiedSave()) {
+          loadLegacyGameState();
+        }
+        if (advancementsDone.has(ADV_MILLIONAIRE_LEGACY)) {
+          advancementsDone.delete(ADV_MILLIONAIRE_LEGACY);
+          advancementsDone.add(ADV_MILLIONAIRE);
+        }
+        silentSyncAdvancementsFromProgress();
+        persistUnifiedSave();
+      }
+
+      function silentSyncAdvancementsFromProgress() {
+        if (goldenCoinClicks >= 10) advancementsDone.add(ADV_GOLDEN_COINER);
+        if (rainbowCoins > 1) advancementsDone.add(ADV_RAINBOW_NOOB);
+        if (coins > 10 && coins < 1000 && rainbowCoins > 2 && rainbowCoins < 100) {
+          advancementsDone.add(ADV_HOMELESS);
+        }
+        if (goldChunks >= 1) advancementsDone.add(ADV_ONE_BAR_GOLD);
+        if (goldChunks >= BEGINNER_MIDAS_TARGET) advancementsDone.add(ADV_BEGINNER_MIDAS);
+        if (coins >= MILLIONAIRE_POKECOINS) advancementsDone.add(ADV_MILLIONAIRE);
+        if (luckyBlocks >= 1) advancementsDone.add(ADV_LUCKY_BLOCK);
+        if (discoLights >= 1) advancementsDone.add(ADV_PARTY_PREP);
+        if (discoLights >= PARTY_MASTER_DISCO_TARGET) advancementsDone.add(ADV_PARTY_MASTER);
+        if (goldChunks >= MIDAS_APPRENTICE_CHUNKS && goldenLuckyBlocks >= MIDAS_APPRENTICE_GOLDEN_BLOCKS) {
+          advancementsDone.add(ADV_MIDAS_APPRENTICE);
+        }
+        if (angelLuckyBlocks >= 1) advancementsDone.add(ADV_LEFT_OUR_WORLD);
+        if (angelLuckyBlocks >= LEAVING_LIVING_ANGEL_BLOCKS) advancementsDone.add(ADV_LEAVING_LIVING);
+        if (angelLuckyBlocks >= GOD_OF_ANGELS_BLOCKS) advancementsDone.add(ADV_GOD_OF_ANGELS);
+        if (clampNonNegNum(ownedPowerUps.gleam) > 0) advancementsDone.add(ADV_GLEAM_EYES);
+        if (clampNonNegNum(ownedPowerUps.pwr_ascension) > 0) advancementsDone.add(ADV_ASCENDING_GOD);
+        if (hasOpenedPartyLuckyBlock()) advancementsDone.add(ADV_PARTY_TIME);
+        if (hasOpenedShinyLuckyBlock()) advancementsDone.add(ADV_OH_SHINY);
+        if (hasOpenedGoldenLuckyBlock()) advancementsDone.add(ADV_GETTING_UPGRADE);
+        try {
+          localStorage.setItem(ADVANCEMENTS_DONE_KEY, JSON.stringify(Array.from(advancementsDone)));
+        } catch (e) {}
+      }
+
+      initPersistence();
+      let coinsPerClick = 1;
+      let greatBallUntil = 0;
+      let greatBallTimeout = null;
+      let unwrapBusy = false;
+      let pendingUnwrap = null;
+      let unwrapAllKind = null;
+      let pendingOpenAllKind = null;
+      const UNWRAP_BULK_PAUSE_MS = 900;
+      let discoFxTimeoutId = null;
+      const DISCO_EDGE_FX_MS = 20000;
+
+      function hasEquippedShinyPowerUp() {
+        return equippedPowerUpIds.includes("shiny");
+      }
+
+      function getEquippedPowerUpBonus() {
+        let bonus = 0;
+        for (const id of equippedPowerUpIds) {
+          const def = getPowerUpDef(id);
+          if (!def || def.halfClick) continue;
+          bonus += def.clickBonus;
+        }
+        return bonus;
+      }
+
+      function isGreatBallBuffActive() {
+        return Date.now() < greatBallUntil;
+      }
+
+      function isUsingGreatBallEffect() {
+        if (isGreatBallBuffActive()) return true;
+        return equippedPokeball === "great" && greatBallPermanent;
+      }
+
+      function applyPokeballVisual() {
+        pokeballBtn.classList.toggle("corrupted", corruptionPokeballActive);
+        if (corruptionPokeballActive) {
+          pokeballBtn.classList.remove("great");
+          pokeballBtn.setAttribute("aria-label", "Corrupted Pokeball — click to claim a Corruption Lucky Block");
+        } else {
+          pokeballBtn.classList.toggle("great", isUsingGreatBallEffect());
+          pokeballBtn.setAttribute("aria-label", "Click Pokeball");
+        }
+      }
+
+      function syncCorruptionPokeballState() {
+        if (!deeperStart2Unlocked) {
+          corruptionPokeballActive = false;
+          return;
+        }
+        corruptionPokeballActive = corruptionClickProgress >= CORRUPTION_CLICKS_TARGET;
+      }
+
+      function recordPokeballClickForCorruption() {
+        if (!deeperStart2Unlocked || corruptionPokeballActive) return;
+        corruptionClickProgress += 1;
+        if (corruptionClickProgress >= CORRUPTION_CLICKS_TARGET) {
+          corruptionPokeballActive = true;
+          applyPokeballVisual();
+        }
+        persistUnifiedSave();
+      }
+
+      function claimCorruptionLuckyBlock() {
+        corruptionLuckyBlocks += 1;
+        corruptionPokeballActive = false;
+        corruptionClickProgress = 0;
+        applyPokeballVisual();
+        persistUnifiedSave();
+        renderLuckyBlockInventory();
+      }
+
+      function syncCoinsPerClick() {
+        const base = isUsingGreatBallEffect() ? 2 : 1;
+        coinsPerClick = base + getEquippedPowerUpBonus();
+      }
+
+      function getPokeballClickPayout() {
+        let payout = coinsPerClick;
+        if (hasEquippedShinyPowerUp()) {
+          shinyPokeballClickCount += 1;
+          if (shinyPokeballClickCount % 2 === 0) payout += 1;
+        }
+        return payout;
+      }
+
+      function rollPartyPowerUp() {
+        const r = Math.random() * 100;
+        let acc = 0;
+        for (const p of POWER_UPS) {
+          acc += p.dropWeight;
+          if (r < acc) return p;
+        }
+        return POWER_UPS[POWER_UPS.length - 1];
+      }
+
+      function rollShinyPowerUp() {
+        const r = Math.random() * 100;
+        let acc = 0;
+        for (const p of SHINY_POWER_UPS) {
+          acc += p.dropWeight;
+          if (r < acc) return p;
+        }
+        return SHINY_POWER_UPS[SHINY_POWER_UPS.length - 1];
+      }
+
+      function rollAngelPowerUp() {
+        const r = Math.random() * 100;
+        let acc = 0;
+        for (const p of ANGEL_POWER_UPS) {
+          acc += p.dropWeight;
+          if (r < acc) return p;
+        }
+        return ANGEL_POWER_UPS[ANGEL_POWER_UPS.length - 1];
+      }
+
+      function renderEquippedPokeballMenu() {
+        const normalEquipped = equippedPokeball === "normal";
+        const greatEquipped = equippedPokeball === "great";
+        if (equipNormalPokeballBtn) {
+          equipNormalPokeballBtn.classList.toggle("equipped", normalEquipped);
+        }
+        if (equipGreatBallBtn) {
+          equipGreatBallBtn.classList.toggle("equipped", greatEquipped);
+          equipGreatBallBtn.disabled = !greatBallPermanent;
+        }
+        if (equippedNormalBadge) {
+          equippedNormalBadge.classList.toggle("hidden", !normalEquipped);
+        }
+        if (equippedGreatBadge) {
+          equippedGreatBadge.classList.toggle("hidden", !greatEquipped);
+        }
+        if (equipGreatBallHint) {
+          equipGreatBallHint.textContent = greatBallPermanent
+            ? "+2 Pokecoins per click"
+            : "+2 Pokecoins per click — buy in shop first";
+        }
+      }
+
+      function setEquippedPokeball(kind) {
+        const next = kind === "great" && greatBallPermanent ? "great" : "normal";
+        if (equippedPokeball === next) return;
+        equippedPokeball = next;
+        applyPokeballVisual();
+        syncCoinsPerClick();
+        persistUnifiedSave();
+        renderEquippedPokeballMenu();
+      }
+
+      function openEquippedPokeballModal() {
+        renderEquippedPokeballMenu();
+        if (equippedPokeballModal) equippedPokeballModal.classList.remove("hidden");
+      }
+
+      function closeEquippedPokeballModal() {
+        if (equippedPokeballModal) equippedPokeballModal.classList.add("hidden");
+      }
+
+      function getPowerUpBonusLabel(p) {
+        if (p.halfClick) return "+0.5 clicks — +1 every 2 Pokeball clicks when equipped";
+        return `+${p.clickBonus} Pokecoin${p.clickBonus === 1 ? "" : "s"} per click when equipped`;
+      }
+
+      function grantPowerUp(id) {
+        if (!getPowerUpDef(id)) return;
+        ownedPowerUps[id] = clampNonNegNum(ownedPowerUps[id]) + 1;
+        persistUnifiedSave();
+        renderPowerUpCatalog();
+        checkItemAdvancements();
+      }
+
+      function hasOwnedPartyPowerUp() {
+        return POWER_UPS.some((p) => clampNonNegNum(ownedPowerUps[p.id]) > 0);
+      }
+
+      function hasOwnedShinyPowerUp() {
+        return SHINY_POWER_UPS.some((p) => clampNonNegNum(ownedPowerUps[p.id]) > 0);
+      }
+
+      function hasOpenedPartyLuckyBlock() {
+        return hasOwnedPartyPowerUp();
+      }
+
+      function hasOpenedShinyLuckyBlock() {
+        return hasOwnedShinyPowerUp();
+      }
+
+      function hasOpenedGoldenLuckyBlock() {
+        return goldenHalo >= 1 || angelWings >= 1;
+      }
+
+      function checkUnwrapAdvancements(kind) {
+        if (kind === "party") tryCompleteAdvancement(ADV_PARTY_TIME, "Party Time!", true);
+        if (kind === "golden") tryCompleteAdvancement(ADV_GETTING_UPGRADE, "Getting an Upgrade", true);
+        if (kind === "shiny") tryCompleteAdvancement(ADV_OH_SHINY, "Oh Shiny!!!", true);
+      }
+
+      function checkItemAdvancements() {
+        tryCompleteAdvancement(ADV_LUCKY_BLOCK, "Lucky Block", luckyBlocks >= 1);
+        tryCompleteAdvancement(ADV_PARTY_PREP, "Party Prep!", discoLights >= 1);
+        tryCompleteAdvancement(ADV_PARTY_MASTER, "Party Master", discoLights >= PARTY_MASTER_DISCO_TARGET);
+        tryCompleteAdvancement(
+          ADV_MIDAS_APPRENTICE,
+          "Midas Apprentice",
+          goldChunks >= MIDAS_APPRENTICE_CHUNKS && goldenLuckyBlocks >= MIDAS_APPRENTICE_GOLDEN_BLOCKS,
+        );
+        tryCompleteAdvancement(ADV_LEFT_OUR_WORLD, "Have we left our world?", angelLuckyBlocks >= 1);
+        tryCompleteAdvancement(ADV_LEAVING_LIVING, "Leaving the living", angelLuckyBlocks >= LEAVING_LIVING_ANGEL_BLOCKS);
+        tryCompleteAdvancement(ADV_GOD_OF_ANGELS, "The God of all Angels", angelLuckyBlocks >= GOD_OF_ANGELS_BLOCKS);
+        tryCompleteAdvancement(ADV_GLEAM_EYES, "A Gleam In Its Eyes", clampNonNegNum(ownedPowerUps.gleam) > 0);
+        tryCompleteAdvancement(ADV_ASCENDING_GOD, "Ascending To GOD", clampNonNegNum(ownedPowerUps.pwr_ascension) > 0);
+        tryCompleteAdvancement(ADV_PARTY_TIME, "Party Time!", hasOpenedPartyLuckyBlock());
+        tryCompleteAdvancement(ADV_OH_SHINY, "Oh Shiny!!!", hasOpenedShinyLuckyBlock());
+        tryCompleteAdvancement(ADV_GETTING_UPGRADE, "Getting an Upgrade", hasOpenedGoldenLuckyBlock());
+      }
+
+      function renderPowerUpCatalog() {
+        if (!powerUpCatalog) return;
+        const maxSlots = getMaxEquippedPowerUps();
+        const powerUpEquipHint = document.getElementById("powerUpEquipHint");
+        if (powerUpEquipHint) {
+          powerUpEquipHint.textContent = `Equip up to ${maxSlots} at a time (${equippedPowerUpIds.length}/${maxSlots} equipped). Rarity is flair — drop odds are hidden.`;
+        }
+        powerUpCatalog.innerHTML = "";
+        const sorted = getAllPowerUpDefs()
+          .filter((p) => clampNonNegNum(ownedPowerUps[p.id]) > 0)
+          .sort((a, b) => a.rarityOneIn - b.rarityOneIn);
+        if (sorted.length === 0) {
+          const empty = document.createElement("li");
+          empty.className = "powerup-empty";
+          empty.textContent =
+            "You do not own any power-ups yet. Open a Party, Shiny, or Angel Lucky Block!";
+          powerUpCatalog.appendChild(empty);
+          return;
+        }
+        const slotsFull = equippedPowerUpIds.length >= maxSlots;
+        for (const p of sorted) {
+          const owned = clampNonNegNum(ownedPowerUps[p.id]);
+          const isEquipped = equippedPowerUpIds.includes(p.id);
+          const li = document.createElement("li");
+          li.className = "powerup-item" + (isEquipped ? " equipped" : "");
+
+          const head = document.createElement("div");
+          head.className = "powerup-item-head";
+          const title = document.createElement("strong");
+          title.textContent = p.name;
+          const rarity = document.createElement("span");
+          rarity.className = "powerup-rarity";
+          rarity.textContent = `1 in ${p.rarityOneIn}`;
+          head.append(title, rarity);
+
+          const meta = document.createElement("p");
+          meta.className = "powerup-meta";
+          meta.textContent = getPowerUpBonusLabel(p);
+
+          const actions = document.createElement("div");
+          actions.className = "powerup-actions";
+          const ownedLbl = document.createElement("span");
+          ownedLbl.className = "powerup-owned";
+          ownedLbl.textContent = `Owned: ${owned}`;
+
+          const equipBtn = document.createElement("button");
+          equipBtn.type = "button";
+          equipBtn.className = "powerup-equip-btn" + (isEquipped ? " equipped-btn" : "");
+          if (isEquipped) {
+            equipBtn.textContent = "Unequip";
+            equipBtn.addEventListener("click", () => {
+              equippedPowerUpIds = equippedPowerUpIds.filter((id) => id !== p.id);
+              if (p.id === "shiny") shinyPokeballClickCount = 0;
+              persistUnifiedSave();
+              syncCoinsPerClick();
+              renderPowerUpCatalog();
+            });
+          } else {
+            equipBtn.textContent = "Equip";
+            equipBtn.disabled = owned < 1 || slotsFull;
+            equipBtn.addEventListener("click", () => {
+              if (clampNonNegNum(ownedPowerUps[p.id]) < 1) return;
+              if (equippedPowerUpIds.length >= maxSlots) return;
+              if (equippedPowerUpIds.includes(p.id)) return;
+              equippedPowerUpIds = [...equippedPowerUpIds, p.id];
+              if (p.id === "shiny") shinyPokeballClickCount = 0;
+              persistUnifiedSave();
+              syncCoinsPerClick();
+              renderPowerUpCatalog();
+            });
+          }
+
+          actions.append(ownedLbl, equipBtn);
+          li.append(head, meta, actions);
+          powerUpCatalog.appendChild(li);
+        }
+      }
+
+      function startDiscoEdgeFx() {
+        gameScreen.classList.add("disco-lights");
+        if (discoFxTimeoutId) clearTimeout(discoFxTimeoutId);
+        discoFxTimeoutId = setTimeout(() => {
+          discoFxTimeoutId = null;
+          gameScreen.classList.remove("disco-lights");
+        }, DISCO_EDGE_FX_MS);
+      }
+
+      function updateCraftingButtons() {
+        if (craftGoldChunkBtn) craftGoldChunkBtn.disabled = goldFragments < 3;
+        if (craftPartyLuckyBlockBtn) {
+          craftPartyLuckyBlockBtn.disabled = goldChunks < 2 || discoLights < 1 || luckyBlocks < 1;
+        }
+        if (craftShinyLuckyBlockSection) {
+          craftShinyLuckyBlockSection.classList.toggle("hidden", !deeperStart2Unlocked);
+        }
+        if (craftShinyLuckyBlockBtn) {
+          craftShinyLuckyBlockBtn.disabled =
+            !deeperStart2Unlocked || lightite < 1 || goldenHalo < 1 || goldenLuckyBlocks < 1;
+        }
+        if (craftAngelLuckyBlockSection) {
+          craftAngelLuckyBlockSection.classList.toggle("hidden", !deeperStart2Unlocked);
+        }
+        if (craftAngelLuckyBlockBtn) {
+          craftAngelLuckyBlockBtn.disabled =
+            !deeperStart2Unlocked || shinyLuckyBlocks < 1 || angelWings < 1;
+        }
+      }
+
+      function renderLuckyBlockInventory() {
+        invLuckyBlocks.textContent = `Lucky Blocks: ${luckyBlocks}`;
+        invPartyLuckyBlocks.textContent = `Party Lucky Blocks: ${partyLuckyBlocks}`;
+        if (invGoldenLuckyBlocks) {
+          invGoldenLuckyBlocks.textContent = `Golden Lucky Blocks: ${goldenLuckyBlocks}`;
+        }
+        if (invShinyLuckyBlocks) {
+          invShinyLuckyBlocks.textContent = `Shiny Lucky Blocks: ${shinyLuckyBlocks}`;
+        }
+        if (shinyLuckyBlockInvRow) {
+          shinyLuckyBlockInvRow.classList.toggle("hidden", !deeperStart2Unlocked);
+        }
+        if (invAngelLuckyBlocks) {
+          invAngelLuckyBlocks.textContent = `Angel Lucky Blocks: ${angelLuckyBlocks}`;
+        }
+        if (angelLuckyBlockInvRow) {
+          angelLuckyBlockInvRow.classList.toggle("hidden", !deeperStart2Unlocked);
+        }
+        if (invCorruptionLuckyBlocks) {
+          invCorruptionLuckyBlocks.textContent = `Corruption Lucky Blocks: ${corruptionLuckyBlocks}`;
+        }
+        if (corruptionLuckyBlockInvRow) {
+          corruptionLuckyBlockInvRow.classList.toggle("hidden", corruptionLuckyBlocks < 1);
+        }
+        invLightite.textContent = `Lightite: ${lightite}`;
+        invDiscoLights.textContent = `Disco Lights: ${discoLights}`;
+        if (invGoldenHalo) {
+          invGoldenHalo.textContent = `Golden Halo: ${goldenHalo}`;
+          invGoldenHalo.classList.toggle("hidden", !deeperStart2Unlocked && goldenHalo < 1);
+        }
+        if (invAngelWings) {
+          invAngelWings.textContent = `Angel Wings: ${angelWings}`;
+          invAngelWings.classList.toggle("hidden", !deeperStart2Unlocked && angelWings < 1);
+        }
+        if (goldenLuckyBlockInvRow) {
+          goldenLuckyBlockInvRow.classList.toggle("hidden", !deeperStart2Unlocked);
+        }
+        const openBusy = unwrapBusy;
+        openLuckyBlockBtn.disabled = luckyBlocks < 1 || openBusy;
+        if (openPartyLuckyBlockBtn) {
+          openPartyLuckyBlockBtn.disabled = partyLuckyBlocks < 1 || openBusy;
+        }
+        if (openGoldenLuckyBlockBtn) {
+          openGoldenLuckyBlockBtn.disabled = goldenLuckyBlocks < 1 || openBusy || !deeperStart2Unlocked;
+        }
+        if (openShinyLuckyBlockBtn) {
+          openShinyLuckyBlockBtn.disabled = shinyLuckyBlocks < 1 || openBusy || !deeperStart2Unlocked;
+        }
+        if (openAngelLuckyBlockBtn) {
+          openAngelLuckyBlockBtn.disabled = angelLuckyBlocks < 1 || openBusy || !deeperStart2Unlocked;
+        }
+        if (buyLuckyBlockBtn) {
+          buyLuckyBlockBtn.disabled =
+            !deeperStartUnlocked || !shopUnlocked || !beginningBought || coins < LUCKY_BLOCK_COST;
+        }
+        if (buyGoldenLuckyBlockBtn) {
+          buyGoldenLuckyBlockBtn.disabled =
+            !deeperStart2Unlocked ||
+            !shopUnlocked ||
+            !beginningBought ||
+            coins < GOLDEN_LUCKY_BLOCK_COST;
+        }
+        updateCraftingButtons();
+        checkItemAdvancements();
+      }
+
+      syncCorruptionPokeballState();
+      applyPokeballVisual();
+      syncCoinsPerClick();
+      renderLuckyBlockInventory();
+
+      function renderCoins() {
+        coinCounter.textContent = `Pokecoins: ${coins}`;
+        invPokecoins.textContent = `Pokecoins: ${coins}`;
+        checkConditionalAdvancements();
+        renderLuckyBlockInventory();
+      }
+
+      function renderRainbowCoins() {
+        rainbowCounterLabel.textContent = `Rainbow Coins: ${rainbowCoins}`;
+        invRainbowCoins.textContent = `Rainbow Coins: ${rainbowCoins}`;
+        checkConditionalAdvancements();
+      }
+
+      function renderGoldFragments() {
+        invGoldFragments.textContent = `Pure Gold Fragments: ${goldFragments}`;
+        updateCraftingButtons();
+      }
+
+      function renderGoldChunks() {
+        invGoldChunks.textContent = `Pure Gold Chunks: ${goldChunks}`;
+        tryCompleteAdvancement(ADV_ONE_BAR_GOLD, "1 bar of gold", goldChunks >= 1);
+        tryCompleteAdvancement(ADV_BEGINNER_MIDAS, "Beginner Midas", goldChunks >= BEGINNER_MIDAS_TARGET);
+        checkItemAdvancements();
+        updateCraftingButtons();
+      }
+
+      function saveCoins() {
+        localStorage.setItem(STORAGE_KEY, String(coins));
+        persistUnifiedSave();
+      }
+
+      function saveRainbowCoins() {
+        localStorage.setItem(RAINBOW_COINS_KEY, String(rainbowCoins));
+        persistUnifiedSave();
+      }
+
+      function saveGoldFragments() {
+        localStorage.setItem(PURE_GOLD_FRAGMENTS_KEY, String(goldFragments));
+        persistUnifiedSave();
+      }
+
+      function saveGoldChunks() {
+        localStorage.setItem(PURE_GOLD_CHUNKS_KEY, String(goldChunks));
+        persistUnifiedSave();
+      }
+
+      function saveGoldenCoinClicks() {
+        localStorage.setItem(GOLDEN_COIN_CLICKS_KEY, String(goldenCoinClicks));
+        persistUnifiedSave();
+      }
+
+      let advancementToastTimer = null;
+      const advancementToastQueue = [];
+      let advancementToastDraining = false;
+
+      function enqueueAdvancementToast(displayName) {
+        advancementToastQueue.push(displayName);
+        if (!advancementToastDraining) drainAdvancementToastQueue();
+      }
+
+      function drainAdvancementToastQueue() {
+        if (advancementToastQueue.length === 0) {
+          advancementToastDraining = false;
+          return;
+        }
+        advancementToastDraining = true;
+        const name = advancementToastQueue.shift();
+        advancementToast.textContent = `You completed the ${name} advancement.`;
+        advancementToast.classList.remove("hidden");
+        if (advancementToastTimer) clearTimeout(advancementToastTimer);
+        advancementToastTimer = setTimeout(() => {
+          advancementToast.classList.add("hidden");
+          advancementToastTimer = setTimeout(() => drainAdvancementToastQueue(), 120);
+        }, 1000);
+      }
+
+      function tryCompleteAdvancement(id, displayName, conditionMet) {
+        if (!conditionMet) return;
+        if (advancementsDone.has(id)) return;
+        advancementsDone.add(id);
+        saveAdvancementsDone(advancementsDone);
+        renderAdvancements();
+        enqueueAdvancementToast(displayName);
+      }
+
+      function renderAdvancements() {
+        for (const def of ADVANCEMENT_DEFINITIONS) {
+          const check = document.getElementById(def.checkId);
+          if (check) check.classList.toggle("hidden", !advancementsDone.has(def.id));
+        }
+      }
+
+      function checkConditionalAdvancements() {
+        tryCompleteAdvancement(ADV_RAINBOW_NOOB, "Rainbow Noob", rainbowCoins > 1);
+        tryCompleteAdvancement(
+          ADV_HOMELESS,
+          "HoMeLeSs",
+          coins > 10 && coins < 1000 && rainbowCoins > 2 && rainbowCoins < 100
+        );
+        tryCompleteAdvancement(ADV_MILLIONAIRE, "Millionaire", coins >= MILLIONAIRE_POKECOINS);
+      }
+
+      function recordGoldenCoinClick() {
+        goldenCoinClicks += 1;
+        saveGoldenCoinClicks();
+        tryCompleteAdvancement(ADV_GOLDEN_COINER, "The Golden Coiner", goldenCoinClicks >= 10);
+      }
+
+      function loadUsedExportCodes() {
+        try {
+          const raw = localStorage.getItem(EXPORTED_CODES_KEY);
+          if (!raw) return new Set();
+          const arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) return new Set();
+          return new Set(arr.filter((x) => typeof x === "string"));
+        } catch {
+          return new Set();
+        }
+      }
+
+      function saveUsedExportCodes(set) {
+        localStorage.setItem(EXPORTED_CODES_KEY, JSON.stringify(Array.from(set)));
+        persistUnifiedSave();
+      }
+
+      function loadFlag(key) {
+        return localStorage.getItem(key) === "true";
+      }
+
+      function saveFlag(key, value) {
+        localStorage.setItem(key, value ? "true" : "false");
+        persistUnifiedSave();
+      }
+
+      let goldenSystemStarted = false;
+      let goldenActive = false;
+      let goldenDespawnTimer = null;
+
+      const tickets = [];
+      const currentPick = [null, null, null];
+
+      function comboKey(a, b, c) {
+        return `${a}-${b}-${c}`;
+      }
+
+      function renderPickButtons() {
+        n1Btn.textContent = `#1: ${currentPick[0] ?? "-"}`;
+        n2Btn.textContent = `#2: ${currentPick[1] ?? "-"}`;
+        n3Btn.textContent = `#3: ${currentPick[2] ?? "-"}`;
+      }
+
+      function renderTickets() {
+        ticketList.innerHTML = "";
+        for (const t of tickets) {
+          const li = document.createElement("li");
+          li.textContent = `${t[0]}, ${t[1]}, ${t[2]}`;
+          ticketList.appendChild(li);
+        }
+        addTicketBtn.disabled = tickets.length >= 5;
+        openTicketsBtn.disabled = tickets.length === 0;
+      }
+
+      function renderShopState() {
+        if (shopUnlocked) {
+          unlockSection.classList.add("hidden");
+          itemsSection.classList.remove("hidden");
+        } else {
+          unlockSection.classList.remove("hidden");
+          itemsSection.classList.add("hidden");
+        }
+
+        if (beginningBought) {
+          buyBeginningBtn.disabled = true;
+          buyBeginningBtn.textContent = "Bought";
+        } else {
+          buyBeginningBtn.disabled = false;
+          buyBeginningBtn.textContent = "Buy 200";
+        }
+
+        if (shopUnlocked && beginningBought) {
+          rainbowSection.classList.remove("hidden");
+          deeperStartSection.classList.remove("hidden");
+        } else {
+          rainbowSection.classList.add("hidden");
+          deeperStartSection.classList.add("hidden");
+        }
+
+        if (shopUnlocked && beginningBought && deeperStartUnlocked) {
+          deeperStart2Section.classList.remove("hidden");
+        } else {
+          deeperStart2Section.classList.add("hidden");
+        }
+
+        if (deeperStartUnlocked) {
+          deeperStartLocked.classList.add("hidden");
+          deeperStartUnlockedEl.classList.remove("hidden");
+        } else {
+          deeperStartLocked.classList.remove("hidden");
+          deeperStartUnlockedEl.classList.add("hidden");
+        }
+
+        if (deeperStart2Unlocked) {
+          deeperStart2Locked.classList.add("hidden");
+          deeperStart2UnlockedEl.classList.remove("hidden");
+        } else {
+          deeperStart2Locked.classList.remove("hidden");
+          deeperStart2UnlockedEl.classList.add("hidden");
+        }
+
+        if (greatBallPermanent) {
+          greatBallShopLocked.classList.add("hidden");
+          greatBallShopOwned.classList.remove("hidden");
+        } else {
+          greatBallShopLocked.classList.remove("hidden");
+          greatBallShopOwned.classList.add("hidden");
+        }
+
+        if (rainbowUnlockedFlag) {
+          rainbowLocked.classList.add("hidden");
+          rainbowUnlocked.classList.remove("hidden");
+          lotteryPanel.classList.add("hidden");
+        } else {
+          rainbowLocked.classList.remove("hidden");
+          rainbowUnlocked.classList.add("hidden");
+          lotteryPanel.classList.add("hidden");
+        }
+
+        renderLuckyBlockInventory();
+      }
+
+      playBtn.addEventListener("click", () => {
+        titleScreen.classList.add("hidden");
+        gameScreen.classList.remove("hidden");
+        if (beginningBought) startGoldenCoinSystem();
+      });
+
+      pokeballBtn.addEventListener("click", () => {
+        if (corruptionPokeballActive) {
+          claimCorruptionLuckyBlock();
+          return;
+        }
+        coins += getPokeballClickPayout();
+        renderCoins();
+        saveCoins();
+        recordPokeballClickForCorruption();
+      });
+
+      pokeballBtn.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        openEquippedPokeballModal();
+      });
+
+      closeEquippedPokeballBtn.addEventListener("click", () => {
+        closeEquippedPokeballModal();
+      });
+
+      equipNormalPokeballBtn.addEventListener("click", () => {
+        setEquippedPokeball("normal");
+      });
+
+      equipGreatBallBtn.addEventListener("click", () => {
+        if (!greatBallPermanent) return;
+        setEquippedPokeball("great");
+      });
+
+      equippedPokeballModal.addEventListener("click", (e) => {
+        if (e.target === equippedPokeballModal) closeEquippedPokeballModal();
+      });
+
+      function openAdvancements() {
+        advancementsModal.classList.remove("hidden");
+      }
+
+      function closeAdvancements() {
+        advancementsModal.classList.add("hidden");
+      }
+
+      const GOLDEN_COINER_TARGET = 10;
+
+      const ADVANCEMENT_DEFINITIONS = [
+        {
+          id: ADV_GOLDEN_COINER,
+          rowId: "advancementGoldenCoiner",
+          checkId: "advancementGoldenCoinerCheck",
+          title: "The Golden Coiner",
+          hint: "Unlock Beginning in the shop so golden coins can spawn. Click golden coins 10 times total (each successful click counts).",
+          getProgress: () =>
+            `Progress: ${Math.min(goldenCoinClicks, GOLDEN_COINER_TARGET)} / ${GOLDEN_COINER_TARGET} golden coin clicks`,
+        },
+        {
+          id: ADV_RAINBOW_NOOB,
+          rowId: "advancementRainbowNoob",
+          checkId: "advancementRainbowNoobCheck",
+          title: "Rainbow Noob",
+          hint: "Have more than 1 Rainbow Coin at the same time.",
+        },
+        {
+          id: ADV_HOMELESS,
+          rowId: "advancementHomeless",
+          checkId: "advancementHomelessCheck",
+          title: "HoMeLeSs",
+          hint: "At the same time: more than 10 Pokecoins but less than 1000; more than 2 Rainbow Coins but less than 100.",
+        },
+        {
+          id: ADV_ONE_BAR_GOLD,
+          rowId: "advancementOneBarGold",
+          checkId: "advancementOneBarGoldCheck",
+          title: "1 bar of gold",
+          hint: "Obtain a Pure Gold Chunk (craft 3 Pure Gold Fragments in the backpack crafting menu).",
+        },
+        {
+          id: ADV_LUCKY_BLOCK,
+          rowId: "advancementLuckyBlock",
+          checkId: "advancementLuckyBlockCheck",
+          title: "Lucky Block",
+          hint: "Obtain a Lucky Block in your backpack (buy from the shop after Deeper into the start).",
+          getProgress: () => `Progress: ${luckyBlocks >= 1 ? 1 : 0} / 1 Lucky Block`,
+        },
+        {
+          id: ADV_PARTY_PREP,
+          rowId: "advancementPartyPrep",
+          checkId: "advancementPartyPrepCheck",
+          title: "Party Prep!",
+          hint: "Obtain 1 Disco Light (from Lucky Blocks, Golden Lucky Blocks, or golden coins).",
+          getProgress: () => `Progress: ${Math.min(discoLights, 1)} / 1 Disco Light`,
+        },
+        {
+          id: ADV_GETTING_UPGRADE,
+          rowId: "advancementGettingUpgrade",
+          checkId: "advancementGettingUpgradeCheck",
+          title: "Getting an Upgrade",
+          hint: "Open a Golden Lucky Block (unwrap animation).",
+        },
+        {
+          id: ADV_OH_SHINY,
+          rowId: "advancementOhShiny",
+          checkId: "advancementOhShinyCheck",
+          title: "Oh Shiny!!!",
+          hint: "Open a Shiny Lucky Block.",
+        },
+        {
+          id: ADV_LEFT_OUR_WORLD,
+          rowId: "advancementLeftOurWorld",
+          checkId: "advancementLeftOurWorldCheck",
+          title: "Have we left our world?",
+          hint: "Obtain an Angel Lucky Block (craft: 1 Shiny Lucky Block + 1 Angel Wings).",
+          getProgress: () => `Progress: ${angelLuckyBlocks >= 1 ? 1 : 0} / 1 Angel Lucky Block`,
+        },
+        {
+          id: ADV_BEGINNER_MIDAS,
+          rowId: "advancementBeginnerMidas",
+          checkId: "advancementBeginnerMidasCheck",
+          title: "Beginner Midas",
+          hint: "Own 4 Pure Gold Chunks at the same time (craft them from fragments in your backpack).",
+          getProgress: () =>
+            `Progress: ${Math.min(goldChunks, BEGINNER_MIDAS_TARGET)} / ${BEGINNER_MIDAS_TARGET} Pure Gold Chunks`,
+        },
+        {
+          id: ADV_MILLIONAIRE,
+          rowId: "advancementMillionaire",
+          checkId: "advancementMillionaireCheck",
+          title: "Millionaire",
+          hint: "Have at least 1,000,000 Pokecoins at the same time.",
+        },
+        {
+          id: ADV_PARTY_TIME,
+          rowId: "advancementPartyTime",
+          checkId: "advancementPartyTimeCheck",
+          title: "Party Time!",
+          hint: "Open a Party Lucky Block.",
+        },
+        {
+          id: ADV_MIDAS_APPRENTICE,
+          rowId: "advancementMidasApprentice",
+          checkId: "advancementMidasApprenticeCheck",
+          title: "Midas Apprentice",
+          hint: "At the same time: own 30+ Pure Gold Chunks and 20+ Golden Lucky Blocks.",
+          getProgress: () =>
+            `Progress: ${Math.min(goldChunks, MIDAS_APPRENTICE_CHUNKS)} / ${MIDAS_APPRENTICE_CHUNKS} chunks, ${Math.min(goldenLuckyBlocks, MIDAS_APPRENTICE_GOLDEN_BLOCKS)} / ${MIDAS_APPRENTICE_GOLDEN_BLOCKS} Golden Lucky Blocks`,
+        },
+        {
+          id: ADV_GLEAM_EYES,
+          rowId: "advancementGleamEyes",
+          checkId: "advancementGleamEyesCheck",
+          title: "A Gleam In Its Eyes",
+          hint: "Obtain the Gleam power-up from a Shiny Lucky Block.",
+          getProgress: () => `Progress: ${clampNonNegNum(ownedPowerUps.gleam)} Gleam owned`,
+        },
+        {
+          id: ADV_ASCENDING_GOD,
+          rowId: "advancementAscendingGod",
+          checkId: "advancementAscendingGodCheck",
+          title: "Ascending To GOD",
+          hint: "Obtain the Ascension power-up from an Angel Lucky Block.",
+          getProgress: () => `Progress: ${clampNonNegNum(ownedPowerUps.pwr_ascension)} Ascension owned`,
+        },
+        {
+          id: ADV_PARTY_MASTER,
+          rowId: "advancementPartyMaster",
+          checkId: "advancementPartyMasterCheck",
+          title: "Party Master",
+          hint: "Own 100 Disco Lights at the same time.",
+          getProgress: () =>
+            `Progress: ${Math.min(discoLights, PARTY_MASTER_DISCO_TARGET)} / ${PARTY_MASTER_DISCO_TARGET} Disco Lights`,
+        },
+        {
+          id: ADV_LEAVING_LIVING,
+          rowId: "advancementLeavingLiving",
+          checkId: "advancementLeavingLivingCheck",
+          title: "Leaving the living",
+          hint: "Have more than 10 Angel Lucky Blocks at the same time (11 or more).",
+          getProgress: () =>
+            `Progress: ${angelLuckyBlocks} / ${LEAVING_LIVING_ANGEL_BLOCKS} Angel Lucky Blocks (need 11+)`,
+        },
+        {
+          id: ADV_GOD_OF_ANGELS,
+          rowId: "advancementGodOfAngels",
+          checkId: "advancementGodOfAngelsCheck",
+          title: "The God of all Angels",
+          hint: "Have more than 100 Angel Lucky Blocks at the same time (101 or more).",
+          getProgress: () =>
+            `Progress: ${angelLuckyBlocks} / ${GOD_OF_ANGELS_BLOCKS} Angel Lucky Blocks (need 101+)`,
+        },
+      ];
+
+      function wireAdvancementRowClicks() {
+        for (const def of ADVANCEMENT_DEFINITIONS) {
+          const row = document.getElementById(def.rowId);
+          if (!row) continue;
+          row.addEventListener("click", () => {
+            const progress = def.getProgress ? def.getProgress() : null;
+            openAdvDetail(def.title, def.hint, progress);
+          });
+        }
+      }
+
+      function openAdvDetail(title, hint, progressLine) {
+        advDetailTitle.textContent = title;
+        advDetailText.textContent = hint;
+        if (progressLine) {
+          advDetailProgress.textContent = progressLine;
+          advDetailProgress.classList.remove("hidden");
+        } else {
+          advDetailProgress.classList.add("hidden");
+        }
+        advDetailModal.classList.remove("hidden");
+      }
+
+      function closeAdvDetail() {
+        advDetailModal.classList.add("hidden");
+      }
+
+      advancementsTab.addEventListener("click", () => {
+        openAdvancements();
+      });
+
+      closeAdvancementsBtn.addEventListener("click", () => {
+        closeAdvancements();
+      });
+
+      wireAdvancementRowClicks();
+
+      buyDeeperStartBtn.addEventListener("click", () => {
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+        if (!beginningBought) {
+          shopStatus.textContent = "Buy Beginning first.";
+          return;
+        }
+        if (deeperStartUnlocked) {
+          shopStatus.textContent = "Deeper into the start is already unlocked.";
+          return;
+        }
+        if (coins < DEEPER_START_COST) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+        coins -= DEEPER_START_COST;
+        deeperStartUnlocked = true;
+        renderCoins();
+        saveCoins();
+        saveFlag(DEEPER_START_UNLOCKED_KEY, true);
+        renderShopState();
+        shopStatus.textContent = "Deeper into the start unlocked.";
+      });
+
+      buyGreatBallBtn.addEventListener("click", () => {
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+        if (!beginningBought) {
+          shopStatus.textContent = "Buy Beginning first.";
+          return;
+        }
+        if (!deeperStartUnlocked) {
+          shopStatus.textContent = "Unlock Deeper into the start first.";
+          return;
+        }
+        if (greatBallPermanent) {
+          shopStatus.textContent = "Great Ball is already owned.";
+          return;
+        }
+        if (coins < GREAT_BALL_COST) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+        coins -= GREAT_BALL_COST;
+        greatBallPermanent = true;
+        equippedPokeball = "great";
+        applyPokeballVisual();
+        syncCoinsPerClick();
+        renderCoins();
+        saveCoins();
+        persistUnifiedSave();
+        renderShopState();
+        shopStatus.textContent = "Great Ball purchased. It's permanent now.";
+      });
+
+      buyLuckyBlockBtn.addEventListener("click", () => {
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+        if (!beginningBought) {
+          shopStatus.textContent = "Buy Beginning first.";
+          return;
+        }
+        if (!deeperStartUnlocked) {
+          shopStatus.textContent = "Unlock Deeper into the start first.";
+          return;
+        }
+        if (coins < LUCKY_BLOCK_COST) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+        coins -= LUCKY_BLOCK_COST;
+        luckyBlocks += 1;
+        renderCoins();
+        saveCoins();
+        persistUnifiedSave();
+        renderShopState();
+        shopStatus.textContent = "Lucky Block added to your backpack.";
+      });
+
+      buyDeeperStart2Btn.addEventListener("click", () => {
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+        if (!beginningBought) {
+          shopStatus.textContent = "Buy Beginning first.";
+          return;
+        }
+        if (!deeperStartUnlocked) {
+          shopStatus.textContent = "Unlock Deeper into the start first.";
+          return;
+        }
+        if (deeperStart2Unlocked) {
+          shopStatus.textContent = "Deeper into the start 2 is already unlocked.";
+          return;
+        }
+        if (coins < DEEPER_START_2_COST) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+        coins -= DEEPER_START_2_COST;
+        deeperStart2Unlocked = true;
+        renderCoins();
+        saveCoins();
+        saveFlag(DEEPER_START_2_UNLOCKED_KEY, true);
+        renderShopState();
+        renderLuckyBlockInventory();
+        shopStatus.textContent = "Deeper into the start 2 unlocked.";
+      });
+
+      buyGoldenLuckyBlockBtn.addEventListener("click", () => {
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+        if (!beginningBought) {
+          shopStatus.textContent = "Buy Beginning first.";
+          return;
+        }
+        if (!deeperStart2Unlocked) {
+          shopStatus.textContent = "Unlock Deeper into the start 2 first.";
+          return;
+        }
+        if (coins < GOLDEN_LUCKY_BLOCK_COST) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+        coins -= GOLDEN_LUCKY_BLOCK_COST;
+        goldenLuckyBlocks += 1;
+        renderCoins();
+        saveCoins();
+        persistUnifiedSave();
+        renderShopState();
+        renderLuckyBlockInventory();
+        shopStatus.textContent = "Golden Lucky Block added to your backpack.";
+      });
+
+      advDetailCloseBtn.addEventListener("click", () => {
+        closeAdvDetail();
+      });
+
+      /** @type {"backpack" | "crafting" | "powerups"} */
+      let inventoryTab = "backpack";
+
+      function applyInventoryView() {
+        inventoryMainView.classList.toggle("hidden", inventoryTab !== "backpack");
+        inventoryCraftingView.classList.toggle("hidden", inventoryTab !== "crafting");
+        inventoryPowerUpsView.classList.toggle("hidden", inventoryTab !== "powerups");
+        inventoryTabBackpack.classList.toggle("inventory-tab-active", inventoryTab === "backpack");
+        inventoryTabCrafting.classList.toggle("inventory-tab-active", inventoryTab === "crafting");
+        inventoryTabPowerUps.classList.toggle("inventory-tab-active", inventoryTab === "powerups");
+        inventoryTabBackpack.setAttribute("aria-selected", inventoryTab === "backpack" ? "true" : "false");
+        inventoryTabCrafting.setAttribute("aria-selected", inventoryTab === "crafting" ? "true" : "false");
+        inventoryTabPowerUps.setAttribute("aria-selected", inventoryTab === "powerups" ? "true" : "false");
+        if (inventoryTab === "powerups") renderPowerUpCatalog();
+      }
+
+      function closeInventoryModal() {
+        inventoryModal.classList.add("hidden");
+        inventoryTab = "backpack";
+        craftStatus.textContent = "";
+        applyInventoryView();
+      }
+
+      backpackBtn.addEventListener("click", () => {
+        inventoryTab = "backpack";
+        craftStatus.textContent = "";
+        applyInventoryView();
+        renderLuckyBlockInventory();
+        renderPowerUpCatalog();
+        inventoryModal.classList.remove("hidden");
+      });
+
+      function getUnwrapBoxTheme(kind) {
+        if (kind === "golden") return "theme-golden";
+        if (kind === "shiny") return "theme-shiny";
+        if (kind === "angel") return "theme-angel";
+        if (kind === "party") return "theme-party";
+        return "theme-normal";
+      }
+
+      function getUnwrapModalTitle(kind) {
+        if (kind === "golden") return "Golden Lucky Block";
+        if (kind === "party") return "Party Lucky Block";
+        if (kind === "shiny") return "Shiny Lucky Block";
+        if (kind === "angel") return "Angel Lucky Block";
+        return "Lucky Block";
+      }
+
+      function isPowerUpUnwrapKind(kind) {
+        return kind === "party" || kind === "shiny" || kind === "angel";
+      }
+
+      function resetPartyUnwrapVisuals() {
+        partyUnwrapBox.classList.remove("shake", "opening");
+        partyUnwrapReveal.classList.remove("visible");
+        partyUnwrapReveal.style.opacity = "";
+        partyUnwrapReveal.style.transform = "";
+      }
+
+      function showUnwrapReveal(display) {
+        partyUnwrapName.textContent = display.name;
+        partyUnwrapRarity.textContent = display.detail || "";
+        if (display.bonus) {
+          partyUnwrapBonus.textContent = display.bonus;
+          partyUnwrapBonus.style.display = "block";
+        } else {
+          partyUnwrapBonus.textContent = "";
+          partyUnwrapBonus.style.display = "none";
+        }
+        partyUnwrapReveal.classList.add("visible");
+      }
+
+      function getItemUnwrapDisplay(kind, reward) {
+        if (kind === "golden") {
+          if (reward === "gold_chunk") return { name: "Pure Gold Chunk", detail: "Added to your backpack." };
+          if (reward === "golden_halo") return { name: "Golden Halo", detail: "Added to your backpack." };
+          if (reward === "disco") return { name: "Disco Lights", detail: "Added to your backpack.", bonus: "Edge glow 20s" };
+          return { name: "Angel Wings", detail: "Added to your backpack." };
+        }
+        if (reward === "fragment") return { name: "Pure Gold Fragment", detail: "Added to your backpack." };
+        if (reward === "lightite") return { name: "Lightite", detail: "Added to your backpack." };
+        if (reward === "rainbow150") return { name: "150 Rainbow Coins", detail: "Added to your balance." };
+        return { name: "Disco Lights", detail: "Added to your backpack.", bonus: "Edge glow 20s" };
+      }
+
+      function getLuckyBlockCountByKind(kind) {
+        if (kind === "normal") return luckyBlocks;
+        if (kind === "party") return partyLuckyBlocks;
+        if (kind === "golden") return goldenLuckyBlocks;
+        if (kind === "shiny") return shinyLuckyBlocks;
+        if (kind === "angel") return angelLuckyBlocks;
+        return 0;
+      }
+
+      function canUnwrapKind(kind) {
+        if (unwrapBusy) return false;
+        if (getLuckyBlockCountByKind(kind) < 1) return false;
+        if ((kind === "golden" || kind === "shiny" || kind === "angel") && !deeperStart2Unlocked) return false;
+        return true;
+      }
+
+      function closeOpenAllConfirmModal() {
+        if (openAllConfirmModal) openAllConfirmModal.classList.add("hidden");
+        pendingOpenAllKind = null;
+      }
+
+      function showOpenAllConfirm(kind) {
+        if (unwrapAllKind || unwrapBusy) return;
+        const count = getLuckyBlockCountByKind(kind);
+        if (count < 1) return;
+        if ((kind === "golden" || kind === "shiny" || kind === "angel") && !deeperStart2Unlocked) return;
+        pendingOpenAllKind = kind;
+        const label = getUnwrapModalTitle(kind);
+        if (openAllConfirmText) {
+          openAllConfirmText.textContent =
+            count === 1
+              ? `Do you want to open your ${label}?`
+              : `Do you want to open all ${count} ${label}s?`;
+        }
+        if (openAllConfirmModal) openAllConfirmModal.classList.remove("hidden");
+      }
+
+      function startOpenAllLuckyBlocks(kind) {
+        if (!canUnwrapKind(kind)) return;
+        unwrapAllKind = kind;
+        startLuckyBlockUnwrap(kind);
+      }
+
+      function scheduleNextBulkUnwrap(kind) {
+        if (unwrapAllKind !== kind) return;
+        if (getLuckyBlockCountByKind(kind) < 1) {
+          unwrapAllKind = null;
+          return;
+        }
+        setTimeout(() => {
+          if (unwrapAllKind !== kind) return;
+          partyUnwrapModal.classList.add("hidden");
+          resetPartyUnwrapVisuals();
+          partyUnwrapCloseBtn.disabled = true;
+          pendingUnwrap = null;
+          if (getLuckyBlockCountByKind(kind) >= 1 && canUnwrapKind(kind)) {
+            startLuckyBlockUnwrap(kind);
+          } else {
+            unwrapAllKind = null;
+          }
+        }, UNWRAP_BULK_PAUSE_MS);
+      }
+
+      function bindOpenAllContextMenu(btn, kind) {
+        if (!btn) return;
+        btn.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          if (unwrapBusy || unwrapAllKind) return;
+          if (getLuckyBlockCountByKind(kind) < 1) return;
+          if ((kind === "golden" || kind === "shiny" || kind === "angel") && !deeperStart2Unlocked) return;
+          showOpenAllConfirm(kind);
+        });
+      }
+
+      function finishUnwrapReveal() {
+        const pending = pendingUnwrap;
+        if (!pending) return;
+        if (isPowerUpUnwrapKind(pending.kind)) {
+          grantPowerUp(pending.powerUp.id);
+          showUnwrapReveal({
+            name: pending.powerUp.name,
+            detail: `Rarity: 1 in ${pending.powerUp.rarityOneIn}`,
+            bonus: getPowerUpBonusLabel(pending.powerUp),
+          });
+        } else {
+          applyUnwrapReward(pending.reward, pending.kind);
+          showUnwrapReveal(getItemUnwrapDisplay(pending.kind, pending.reward));
+        }
+        partyUnwrapCloseBtn.disabled = false;
+        unwrapBusy = false;
+        pendingUnwrap = null;
+        renderLuckyBlockInventory();
+        if (isPowerUpUnwrapKind(pending.kind)) renderPowerUpCatalog();
+        checkUnwrapAdvancements(pending.kind);
+        checkItemAdvancements();
+        if (unwrapAllKind === pending.kind) {
+          scheduleNextBulkUnwrap(pending.kind);
+        }
+      }
+
+      function closePartyUnwrapModal() {
+        partyUnwrapModal.classList.add("hidden");
+        resetPartyUnwrapVisuals();
+        partyUnwrapCloseBtn.disabled = true;
+        unwrapBusy = false;
+        pendingUnwrap = null;
+        unwrapAllKind = null;
+        renderLuckyBlockInventory();
+      }
+
+      function startLuckyBlockUnwrap(kind) {
+        if (unwrapBusy) return;
+        if (kind === "normal") {
+          if (luckyBlocks < 1) return;
+          luckyBlocks -= 1;
+        } else if (kind === "party") {
+          if (partyLuckyBlocks < 1) return;
+          partyLuckyBlocks -= 1;
+        } else if (kind === "golden") {
+          if (!deeperStart2Unlocked || goldenLuckyBlocks < 1) return;
+          goldenLuckyBlocks -= 1;
+        } else if (kind === "shiny") {
+          if (!deeperStart2Unlocked || shinyLuckyBlocks < 1) return;
+          shinyLuckyBlocks -= 1;
+        } else if (kind === "angel") {
+          if (!deeperStart2Unlocked || angelLuckyBlocks < 1) return;
+          angelLuckyBlocks -= 1;
+        } else {
+          return;
+        }
+
+        unwrapBusy = true;
+        persistUnifiedSave();
+        renderLuckyBlockInventory();
+
+        const theme = getUnwrapBoxTheme(kind);
+        if (kind === "party") {
+          pendingUnwrap = { kind, powerUp: rollPartyPowerUp() };
+        } else if (kind === "shiny") {
+          pendingUnwrap = { kind, powerUp: rollShinyPowerUp() };
+        } else if (kind === "angel") {
+          pendingUnwrap = { kind, powerUp: rollAngelPowerUp() };
+        } else if (kind === "golden") {
+          pendingUnwrap = { kind, reward: rollGoldenLuckyReward() };
+        } else {
+          pendingUnwrap = { kind, reward: rollLuckyReward() };
+        }
+
+        if (partyUnwrapTitle) partyUnwrapTitle.textContent = getUnwrapModalTitle(kind);
+        partyUnwrapBox.className = `party-unwrap-box ${theme}`;
+        resetPartyUnwrapVisuals();
+        partyUnwrapBox.classList.add(theme);
+
+        partyUnwrapCloseBtn.disabled = true;
+        partyUnwrapModal.classList.remove("hidden");
+
+        requestAnimationFrame(() => {
+          partyUnwrapBox.classList.add("shake");
+        });
+
+        setTimeout(() => {
+          partyUnwrapBox.classList.remove("shake");
+          partyUnwrapBox.classList.add("opening");
+        }, 1700);
+
+        setTimeout(() => {
+          finishUnwrapReveal();
+        }, 2400);
+      }
+
+      partyUnwrapCloseBtn.addEventListener("click", () => {
+        closePartyUnwrapModal();
+      });
+
+      openAllConfirmYes.addEventListener("click", () => {
+        const kind = pendingOpenAllKind;
+        closeOpenAllConfirmModal();
+        if (kind) startOpenAllLuckyBlocks(kind);
+      });
+
+      openAllConfirmNo.addEventListener("click", () => {
+        closeOpenAllConfirmModal();
+      });
+
+      openAllConfirmModal.addEventListener("click", (e) => {
+        if (e.target === openAllConfirmModal) closeOpenAllConfirmModal();
+      });
+
+      openLuckyBlockBtn.addEventListener("click", () => {
+        startLuckyBlockUnwrap("normal");
+      });
+
+      openPartyLuckyBlockBtn.addEventListener("click", () => {
+        startLuckyBlockUnwrap("party");
+      });
+
+      openGoldenLuckyBlockBtn.addEventListener("click", () => {
+        startLuckyBlockUnwrap("golden");
+      });
+
+      openShinyLuckyBlockBtn.addEventListener("click", () => {
+        startLuckyBlockUnwrap("shiny");
+      });
+
+      openAngelLuckyBlockBtn.addEventListener("click", () => {
+        startLuckyBlockUnwrap("angel");
+      });
+
+      bindOpenAllContextMenu(openLuckyBlockBtn, "normal");
+      bindOpenAllContextMenu(openPartyLuckyBlockBtn, "party");
+      bindOpenAllContextMenu(openGoldenLuckyBlockBtn, "golden");
+      bindOpenAllContextMenu(openShinyLuckyBlockBtn, "shiny");
+      bindOpenAllContextMenu(openAngelLuckyBlockBtn, "angel");
+
+      craftShinyLuckyBlockBtn.addEventListener("click", () => {
+        craftStatus.textContent = "";
+        if (!deeperStart2Unlocked) {
+          craftStatus.textContent = "Unlock Deeper into the start 2 first.";
+          return;
+        }
+        if (lightite < 1) {
+          craftStatus.textContent = "You need 1 Lightite.";
+          return;
+        }
+        if (goldenHalo < 1) {
+          craftStatus.textContent = "You need 1 Golden Halo.";
+          return;
+        }
+        if (goldenLuckyBlocks < 1) {
+          craftStatus.textContent = "You need 1 Golden Lucky Block.";
+          return;
+        }
+        lightite -= 1;
+        goldenHalo -= 1;
+        goldenLuckyBlocks -= 1;
+        shinyLuckyBlocks += 1;
+        persistUnifiedSave();
+        renderLuckyBlockInventory();
+        craftStatus.textContent = "You crafted a Shiny Lucky Block!";
+      });
+
+      craftAngelLuckyBlockBtn.addEventListener("click", () => {
+        craftStatus.textContent = "";
+        if (!deeperStart2Unlocked) {
+          craftStatus.textContent = "Unlock Deeper into the start 2 first.";
+          return;
+        }
+        if (shinyLuckyBlocks < 1) {
+          craftStatus.textContent = "You need 1 Shiny Lucky Block.";
+          return;
+        }
+        if (angelWings < 1) {
+          craftStatus.textContent = "You need 1 Angel Wings.";
+          return;
+        }
+        shinyLuckyBlocks -= 1;
+        angelWings -= 1;
+        angelLuckyBlocks += 1;
+        persistUnifiedSave();
+        renderLuckyBlockInventory();
+        craftStatus.textContent = "You crafted an Angel Lucky Block!";
+      });
+
+      function rollLuckyReward() {
+        const r = Math.random() * 100;
+        if (r < 40) return "fragment";
+        if (r < 75) return "lightite";
+        if (r < 95) return "rainbow150";
+        return "disco";
+      }
+
+      function rollGoldenLuckyReward() {
+        const r = Math.random() * 100;
+        if (r < 40) return "gold_chunk";
+        if (r < 70) return "golden_halo";
+        if (r < 95) return "disco";
+        return "angel_wings";
+      }
+
+      function applyUnwrapReward(reward, kind) {
+        if (kind === "golden") {
+          if (reward === "gold_chunk") {
+            goldChunks += 1;
+            saveGoldChunks();
+            renderGoldChunks();
+          } else if (reward === "golden_halo") {
+            goldenHalo += 1;
+            persistUnifiedSave();
+            renderLuckyBlockInventory();
+          } else if (reward === "disco") {
+            discoLights += 1;
+            persistUnifiedSave();
+            startDiscoEdgeFx();
+            renderLuckyBlockInventory();
+          } else {
+            angelWings += 1;
+            persistUnifiedSave();
+            renderLuckyBlockInventory();
+          }
+          return;
+        }
+        if (reward === "fragment") {
+          goldFragments += 1;
+          saveGoldFragments();
+          renderGoldFragments();
+        } else if (reward === "lightite") {
+          lightite += 1;
+          persistUnifiedSave();
+          renderLuckyBlockInventory();
+        } else if (reward === "rainbow150") {
+          rainbowCoins += 150;
+          renderRainbowCoins();
+          saveRainbowCoins();
+        } else {
+          discoLights += 1;
+          persistUnifiedSave();
+          startDiscoEdgeFx();
+          renderLuckyBlockInventory();
+        }
+      }
+
+      inventoryTabBackpack.addEventListener("click", () => {
+        inventoryTab = "backpack";
+        craftStatus.textContent = "";
+        applyInventoryView();
+      });
+
+      inventoryTabCrafting.addEventListener("click", () => {
+        inventoryTab = "crafting";
+        craftStatus.textContent = "";
+        applyInventoryView();
+      });
+
+      inventoryTabPowerUps.addEventListener("click", () => {
+        inventoryTab = "powerups";
+        craftStatus.textContent = "";
+        applyInventoryView();
+      });
+
+      closeInventoryBtn.addEventListener("click", () => {
+        closeInventoryModal();
+      });
+
+      closeInventoryBtnCrafting.addEventListener("click", () => {
+        closeInventoryModal();
+      });
+
+      closeInventoryBtnPowerUps.addEventListener("click", () => {
+        closeInventoryModal();
+      });
+
+      craftGoldChunkBtn.addEventListener("click", () => {
+        craftStatus.textContent = "";
+        if (goldFragments < 3) {
+          craftStatus.textContent = "You need 3 Pure Gold Fragments.";
+          return;
+        }
+        goldFragments -= 3;
+        goldChunks += 1;
+        saveGoldFragments();
+        saveGoldChunks();
+        renderGoldFragments();
+        renderGoldChunks();
+        craftStatus.textContent = "You crafted a Pure Gold Chunk!";
+      });
+
+      craftPartyLuckyBlockBtn.addEventListener("click", () => {
+        craftStatus.textContent = "";
+        if (goldChunks < 2) {
+          craftStatus.textContent = "You need 2 Pure Gold Chunks.";
+          return;
+        }
+        if (discoLights < 1) {
+          craftStatus.textContent = "You need 1 Disco Light.";
+          return;
+        }
+        if (luckyBlocks < 1) {
+          craftStatus.textContent = "You need 1 Lucky Block.";
+          return;
+        }
+        goldChunks -= 2;
+        discoLights -= 1;
+        luckyBlocks -= 1;
+        partyLuckyBlocks += 1;
+        persistUnifiedSave();
+        renderGoldChunks();
+        renderLuckyBlockInventory();
+        craftStatus.textContent = "You crafted a Party Lucky Block!";
+      });
+
+      shopBtn.addEventListener("click", () => {
+        shopStatus.textContent = "";
+        renderShopState();
+        shopModal.classList.remove("hidden");
+      });
+
+      closeShopBtn.addEventListener("click", () => {
+        shopModal.classList.add("hidden");
+      });
+
+      payBtn.addEventListener("click", () => {
+        if (shopUnlocked) {
+          shopStatus.textContent = "Shop is already unlocked.";
+          return;
+        }
+
+        if (coins < 300) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+
+        coins -= 300;
+        shopUnlocked = true;
+        renderCoins();
+        saveCoins();
+        saveFlag(SHOP_UNLOCKED_KEY, true);
+        renderShopState();
+        shopStatus.textContent = "Shop unlocked.";
+      });
+
+      buyBeginningBtn.addEventListener("click", () => {
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+
+        if (beginningBought) {
+          shopStatus.textContent = "Beginning already purchased.";
+          return;
+        }
+
+        if (coins < 200) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+
+        coins -= 200;
+        beginningBought = true;
+        renderCoins();
+        saveCoins();
+        saveFlag(BEGINNING_BOUGHT_KEY, true);
+        renderShopState();
+        shopStatus.textContent = "Beginning purchased. It will do something later.";
+        startGoldenCoinSystem();
+      });
+
+      unlockRainbowBtn.addEventListener("click", () => {
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+
+        if (!beginningBought) {
+          shopStatus.textContent = "Buy Beginning first.";
+          return;
+        }
+
+        if (rainbowUnlockedFlag) {
+          shopStatus.textContent = "Rainbow Coins already unlocked.";
+          return;
+        }
+
+        if (coins < 1000) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+
+        coins -= 1000;
+        rainbowUnlockedFlag = true;
+        renderCoins();
+        saveCoins();
+        saveFlag(RAINBOW_UNLOCKED_KEY, true);
+        renderShopState();
+        shopStatus.textContent = "Rainbow Coins unlocked.";
+      });
+
+      function requireRainbowUnlocked() {
+        if (!rainbowUnlockedFlag) {
+          shopStatus.textContent = "Unlock Rainbow Coins first.";
+          return false;
+        }
+        return true;
+      }
+
+      function spendPokecoins(cost) {
+        if (coins < cost) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return false;
+        }
+        coins -= cost;
+        renderCoins();
+        saveCoins();
+        return true;
+      }
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function spawnGoldenCoin() {
+        if (!beginningBought) return;
+        if (titleScreen && !titleScreen.classList.contains("hidden")) return;
+        if (goldenActive) return;
+
+        goldenActive = true;
+        goldCoinBtn.classList.remove("hidden");
+
+        const size = 54;
+        const margin = 16;
+        const maxX = Math.max(margin, window.innerWidth - size - margin);
+        const maxY = Math.max(margin, window.innerHeight - size - margin);
+        const x = randomInt(margin, maxX);
+        const y = randomInt(margin + 40, maxY); // avoid top counters
+        goldCoinBtn.style.left = `${x}px`;
+        goldCoinBtn.style.top = `${y}px`;
+
+        if (goldenDespawnTimer) clearTimeout(goldenDespawnTimer);
+        goldenDespawnTimer = setTimeout(() => {
+          goldenActive = false;
+          goldCoinBtn.classList.add("hidden");
+        }, 5000);
+      }
+
+      function scheduleGoldenCoin() {
+        // about once every 60 seconds
+        setTimeout(() => {
+          spawnGoldenCoin();
+          scheduleGoldenCoin();
+        }, 60000);
+      }
+
+      function startGoldenCoinSystem() {
+        if (goldenSystemStarted) return;
+        if (!beginningBought) return;
+        goldenSystemStarted = true;
+        scheduleGoldenCoin();
+      }
+
+      function setGreatBallBuff(ms) {
+        greatBallUntil = Date.now() + ms;
+        applyPokeballVisual();
+        syncCoinsPerClick();
+        if (greatBallTimeout) clearTimeout(greatBallTimeout);
+        greatBallTimeout = setTimeout(() => {
+          greatBallUntil = 0;
+          applyPokeballVisual();
+          syncCoinsPerClick();
+        }, ms);
+      }
+
+      goldCoinBtn.addEventListener("click", () => {
+        if (!goldenActive) return;
+
+        recordGoldenCoinClick();
+
+        // always +100 pokecoins
+        coins += 100;
+        renderCoins();
+        saveCoins();
+
+        // hide current coin immediately
+        goldenActive = false;
+        goldCoinBtn.classList.add("hidden");
+        if (goldenDespawnTimer) clearTimeout(goldenDespawnTimer);
+
+        const roll = Math.floor(Math.random() * 3); // 0..2 even chance
+        if (roll === 0) {
+          shopStatus.textContent = "Golden coin: +100 Pokecoins! Another spawned!";
+          // Ensure it visually disappears first, then respawns
+          requestAnimationFrame(() => spawnGoldenCoin());
+          return;
+        }
+
+        if (roll === 1) {
+          shopStatus.textContent = "Golden coin: Great Ball! 2 Pokecoins per click for 15 seconds.";
+          setGreatBallBuff(15000);
+          return;
+        }
+
+        goldFragments += 1;
+        saveGoldFragments();
+        renderGoldFragments();
+        shopStatus.textContent = "Golden coin: You found a Pure Gold Fragment.";
+      });
+
+      buyRainbow1Btn.addEventListener("click", () => {
+        if (!requireRainbowUnlocked()) return;
+        if (!spendPokecoins(100)) return;
+        rainbowCoins += 1;
+        renderRainbowCoins();
+        saveRainbowCoins();
+        shopStatus.textContent = "Bought 1 Rainbow Coin.";
+      });
+
+      buyRainbow10Btn.addEventListener("click", () => {
+        if (!requireRainbowUnlocked()) return;
+        if (!spendPokecoins(999)) return;
+        rainbowCoins += 10;
+        renderRainbowCoins();
+        saveRainbowCoins();
+        shopStatus.textContent = "Bought 10 Rainbow Coins.";
+      });
+
+      buyRainbowCrateBtn.addEventListener("click", () => {
+        if (!requireRainbowUnlocked()) return;
+        if (!spendPokecoins(500)) return;
+        const amount = Math.floor(Math.random() * 10) + 1; // 1..10, equal chance
+        rainbowCoins += amount;
+        renderRainbowCoins();
+        saveRainbowCoins();
+        shopStatus.textContent = `Crate opened: +${amount} Rainbow Coins.`;
+      });
+
+      function promptPick(slotIndex) {
+        const value = window.prompt(`Pick number ${slotIndex + 1} (1-10):`, "");
+        if (value === null) return;
+        const n = Number(value);
+        if (!Number.isInteger(n) || n < 1 || n > 10) {
+          shopStatus.textContent = "Invalid number. Must be 1 to 10.";
+          return;
+        }
+        currentPick[slotIndex] = n;
+        renderPickButtons();
+      }
+
+      n1Btn.addEventListener("click", () => promptPick(0));
+      n2Btn.addEventListener("click", () => promptPick(1));
+      n3Btn.addEventListener("click", () => promptPick(2));
+
+      function currentPickComplete() {
+        return currentPick.every((x) => Number.isInteger(x));
+      }
+
+      addTicketBtn.addEventListener("click", () => {
+        if (!requireRainbowUnlocked()) return;
+        if (tickets.length >= 5) return;
+        if (!currentPickComplete()) {
+          shopStatus.textContent = "Pick 3 numbers first.";
+          return;
+        }
+        if (!spendPokecoins(700)) return;
+        tickets.push([currentPick[0], currentPick[1], currentPick[2]]);
+        shopStatus.textContent = "Ticket added.";
+        renderTickets();
+      });
+
+      clearTicketsBtn.addEventListener("click", () => {
+        tickets.length = 0;
+        shopStatus.textContent = "Tickets cleared.";
+        renderTickets();
+      });
+
+      function generateWinningCombos() {
+        const all = [];
+        for (let a = 1; a <= 10; a++) {
+          for (let b = 1; b <= 10; b++) {
+            for (let c = 1; c <= 10; c++) {
+              all.push(comboKey(a, b, c));
+            }
+          }
+        }
+        for (let i = all.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [all[i], all[j]] = [all[j], all[i]];
+        }
+
+        const jackpot = new Set(all.slice(0, 1)); // 1 combo
+        const win1000 = new Set(all.slice(0, 1)); // alias, clarity
+        const win100 = new Set(all.slice(1, 26)); // 25 combos -> 100 rainbow
+        const win50 = new Set(all.slice(26, 76)); // 50 combos -> 50 rainbow
+        const win30 = new Set(all.slice(76, 176)); // 100 combos -> 30 rainbow
+        const win20 = new Set(all.slice(176, 376)); // 200 combos -> 20 rainbow
+        return { win1000, win100, win50, win30, win20 };
+      }
+
+      function prizeForCombo(key, wins) {
+        if (wins.win1000.has(key)) return 1000;
+        if (wins.win100.has(key)) return 100;
+        if (wins.win50.has(key)) return 50;
+        if (wins.win30.has(key)) return 30;
+        if (wins.win20.has(key)) return 20;
+        return 0;
+      }
+
+      openTicketsBtn.addEventListener("click", () => {
+        if (!requireRainbowUnlocked()) return;
+        if (tickets.length === 0) return;
+
+        const wins = generateWinningCombos();
+        let totalPrize = 0;
+        let hitCount = 0;
+        let jackpotHits = 0;
+
+        for (const t of tickets) {
+          const key = comboKey(t[0], t[1], t[2]);
+          const prize = prizeForCombo(key, wins);
+          if (prize > 0) {
+            hitCount += 1;
+            totalPrize += prize;
+            if (prize === 1000) jackpotHits += 1;
+          }
+        }
+
+        if (totalPrize > 0) {
+          rainbowCoins += totalPrize;
+          renderRainbowCoins();
+          saveRainbowCoins();
+        }
+
+        const opened = tickets.length;
+        tickets.length = 0;
+        renderTickets();
+
+        if (hitCount === 0) {
+          shopStatus.textContent = `Opened ${opened} ticket(s): no wins this time.`;
+        } else if (jackpotHits > 0) {
+          shopStatus.textContent = `Opened ${opened} ticket(s): ${hitCount} win(s), JACKPOT x${jackpotHits}! +${totalPrize} Rainbow Coins.`;
+        } else {
+          shopStatus.textContent = `Opened ${opened} ticket(s): ${hitCount} win(s). +${totalPrize} Rainbow Coins.`;
+        }
+      });
+
+      buyRainbowLotteryBtn.addEventListener("click", () => {
+        if (!requireRainbowUnlocked()) return;
+        lotteryPanel.classList.toggle("hidden");
+        shopStatus.textContent = lotteryPanel.classList.contains("hidden")
+          ? ""
+          : "Lottery opened. Pick numbers and add tickets.";
+      });
+
+      function randomLetter() {
+        const letters = "abcdefghijklmnopqrstuvwxyz";
+        return letters[Math.floor(Math.random() * letters.length)];
+      }
+
+      function randomDigit1to9() {
+        return String(Math.floor(Math.random() * 9) + 1);
+      }
+
+      function mapAmountDigitToLetter(digitChar) {
+        // 0=z, 1=a ... 9=i
+        if (digitChar === "0") return "z";
+        const n = Number(digitChar);
+        if (!Number.isInteger(n) || n < 1 || n > 9) return null;
+        return String.fromCharCode("a".charCodeAt(0) + (n - 1));
+      }
+
+      function randomSymbol() {
+        const symbols = [",", "~", "'", ":"];
+        return symbols[Math.floor(Math.random() * symbols.length)];
+      }
+
+      function generateExportCode(amount) {
+        const amountStr = String(amount);
+        const digits = amountStr.split(""); // left-to-right
+
+        const d3 = mapAmountDigitToLetter(digits[0]);
+        if (!d3) return null;
+
+        const code = [];
+        code.push(randomLetter()); // digit 1
+        code.push(randomDigit1to9()); // digit 2
+        code.push(d3); // digit 3
+        code.push(randomLetter()); // digit 4
+
+        if (digits.length === 1) {
+          code.push("."); // digit 5 end
+          return code.join("");
+        }
+
+        const d5 = mapAmountDigitToLetter(digits[1]);
+        if (!d5) return null;
+        code.push(d5); // digit 5
+        code.push(randomSymbol()); // digit 6
+
+        if (digits.length === 2) {
+          code.push("."); // digit 7 end for double digit
+          return code.join("");
+        }
+
+        const d7 = mapAmountDigitToLetter(digits[2]);
+        if (!d7) return null;
+        code.push(d7); // digit 7 for third digit
+        code.push("."); // digit 8 end for triple digit
+        return code.join("");
+      }
+
+      function generateUniqueExportCode(amount) {
+        for (let attempt = 0; attempt < 2000; attempt++) {
+          const code = generateExportCode(amount);
+          if (!code) return null;
+          if (!usedExportCodes.has(code)) {
+            usedExportCodes.add(code);
+            saveUsedExportCodes(usedExportCodes);
+            return code;
+          }
+        }
+        return null;
+      }
+
+      function openExport() {
+        exportStatus.textContent = "";
+        exportCodeBox.textContent = "";
+        exportAmountInput.value = "";
+        exportModal.classList.remove("hidden");
+      }
+
+      function closeExport() {
+        exportModal.classList.add("hidden");
+      }
+
+      exportRainbowBtn.addEventListener("click", () => {
+        openExport();
+      });
+
+      closeExportBtn.addEventListener("click", () => {
+        closeExport();
+      });
+
+      generateExportBtn.addEventListener("click", () => {
+        const amount = Number(exportAmountInput.value);
+        if (!Number.isInteger(amount) || amount < 1 || amount > 999) {
+          exportStatus.textContent = "Invalid amount. Must be 1 to 999.";
+          return;
+        }
+        if (amount > rainbowCoins) {
+          exportStatus.textContent = "Not enough Rainbow Coins.";
+          return;
+        }
+
+        const code = generateUniqueExportCode(amount);
+        if (!code) {
+          exportStatus.textContent = "Cannot generate code for that amount (digits must be 0-9).";
+          return;
+        }
+
+        rainbowCoins -= amount;
+        renderRainbowCoins();
+        saveRainbowCoins();
+        exportCodeBox.textContent = code;
+        exportStatus.textContent = `Exported ${amount} Rainbow Coins.`;
+      });
+
+      copyExportCodeBtn.addEventListener("click", async () => {
+        const code = exportCodeBox.textContent.trim();
+        if (!code) {
+          exportStatus.textContent = "No code to copy.";
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(code);
+          exportStatus.textContent = "Copied.";
+        } catch {
+          exportStatus.textContent = "Copy failed (browser blocked clipboard).";
+        }
+      });
+
+      renderCoins();
+      renderRainbowCoins();
+      renderGoldFragments();
+      renderGoldChunks();
+      renderLuckyBlockInventory();
+      renderPowerUpCatalog();
+      syncCoinsPerClick();
+      renderAdvancements();
+      checkItemAdvancements();
+      renderPickButtons();
+      renderTickets();
+      renderShopState();
+    </script>
+  </body>
+</html>
