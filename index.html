@@ -39,8 +39,9 @@
         padding: 48px 24px;
         border-radius: 24px;
         text-align: center;
-        background: rgba(0, 0, 0, 0.28);
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.25));
         box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.12);
       }
 
       .game-title {
@@ -55,6 +56,53 @@
 
       .game-title .red {
         color: var(--red);
+      }
+
+      .title-subtitle {
+        margin: -18px 0 22px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        line-height: 1.4;
+        font-size: 1.05rem;
+      }
+
+      .title-steps {
+        margin: 0 auto 26px;
+        padding: 0;
+        width: min(92vw, 520px);
+        list-style: none;
+        text-align: left;
+        display: grid;
+        gap: 10px;
+      }
+
+      .title-step {
+        display: grid;
+        grid-template-columns: 26px 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.92);
+        line-height: 1.35;
+      }
+
+      .title-step b {
+        color: #fff;
+      }
+
+      .step-dot {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.18);
       }
 
       .play-btn {
@@ -82,11 +130,21 @@
         opacity: 0.95;
       }
 
-      .warning {
-        margin: 36px 0 0;
-        color: #ffc9c9;
-        font-size: 0.95rem;
-        opacity: 0.95;
+      .title-hint {
+        margin: 18px auto 0;
+        width: min(92vw, 560px);
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.92rem;
+        line-height: 1.45;
+        text-align: left;
+      }
+
+      .title-hint strong {
+        color: #fff;
       }
 
       .hidden {
@@ -101,6 +159,95 @@
         align-items: center;
         justify-items: center;
         padding: 16px;
+      }
+
+      .game-screen::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background:
+          radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.85) 55%, transparent 60%),
+          radial-gradient(1px 1px at 38% 72%, rgba(255, 255, 255, 0.65) 55%, transparent 60%),
+          radial-gradient(2px 2px at 66% 26%, rgba(255, 255, 255, 0.9) 55%, transparent 60%),
+          radial-gradient(1px 1px at 82% 52%, rgba(255, 255, 255, 0.7) 55%, transparent 60%),
+          radial-gradient(1px 1px at 24% 54%, rgba(255, 255, 255, 0.55) 55%, transparent 60%),
+          radial-gradient(1px 1px at 56% 12%, rgba(255, 255, 255, 0.6) 55%, transparent 60%),
+          radial-gradient(2px 2px at 90% 20%, rgba(160, 220, 255, 0.55) 55%, transparent 60%),
+          radial-gradient(2px 2px at 10% 80%, rgba(200, 170, 255, 0.45) 55%, transparent 60%),
+          radial-gradient(900px 700px at 60% 40%, rgba(80, 120, 255, 0.09), transparent 65%),
+          radial-gradient(700px 500px at 20% 70%, rgba(180, 90, 255, 0.06), transparent 62%),
+          radial-gradient(circle at top, rgba(20, 32, 64, 0.72), rgba(0, 0, 0, 1) 65%);
+        opacity: 0.92;
+        animation: starDrift 28s linear infinite;
+      }
+
+      @keyframes starDrift {
+        0% {
+          transform: translate3d(0, 0, 0);
+        }
+        100% {
+          transform: translate3d(-22px, 14px, 0);
+        }
+      }
+
+      .game-screen > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .luck-clover {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .luck-clover.hidden {
+        display: none;
+      }
+
+      .music-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .music-btn {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 12px;
+        cursor: pointer;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        background: rgba(255, 255, 255, 0.92);
+        color: #111;
+      }
+
+      .music-btn.off {
+        background: rgba(255, 255, 255, 0.14);
+        color: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .music-volume {
+        width: 120px;
+      }
+
+      body.modal-open .rainbow-counter {
+        pointer-events: none;
+        opacity: 0;
       }
 
       .game-screen.disco-lights {
@@ -176,6 +323,7 @@
         place-items: center;
         padding: 16px;
         background: rgba(0, 0, 0, 0.55);
+        z-index: 120;
       }
 
       .export-modal.hidden {
@@ -190,6 +338,8 @@
         border-radius: 14px;
         padding: 16px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 121;
       }
 
       .export-card h3 {
@@ -404,6 +554,7 @@
         background: rgba(0, 0, 0, 0.45);
         display: flex;
         justify-content: flex-start;
+        z-index: 120;
       }
 
       .inventory-modal.hidden {
@@ -419,6 +570,8 @@
         padding: 16px;
         text-align: left;
         overflow-y: auto;
+        position: relative;
+        z-index: 121;
       }
 
       .inventory-tab-row {
@@ -458,6 +611,7 @@
         background: rgba(0, 0, 0, 0.45);
         display: flex;
         justify-content: flex-end;
+        z-index: 120;
       }
 
       .shop-modal.hidden {
@@ -473,6 +627,8 @@
         padding: 16px;
         text-align: left;
         overflow-y: auto;
+        position: relative;
+        z-index: 121;
       }
 
       .shop-header {
@@ -874,6 +1030,90 @@
         color: #eee;
       }
 
+      .admin-wish-card {
+        width: min(92vw, 520px);
+        max-height: 90vh;
+        overflow-y: auto;
+        background: #111;
+        color: #fff;
+        border: 1px solid #333;
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .admin-wish-card h4 {
+        margin: 0 0 8px;
+      }
+
+      .admin-wish-hint {
+        margin: 0 0 12px;
+        color: #aaa;
+        font-size: 0.82rem;
+        line-height: 1.4;
+      }
+
+      .admin-wish-codes {
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        font-size: 0.78rem;
+        line-height: 1.45;
+        color: #ccc;
+      }
+
+      .admin-wish-codes dt {
+        font-weight: 800;
+        color: #e8e8e8;
+        margin-top: 6px;
+      }
+
+      .admin-wish-codes dt:first-child {
+        margin-top: 0;
+      }
+
+      .admin-wish-codes dd {
+        margin: 2px 0 0;
+        padding: 0;
+      }
+
+      .admin-wish-input {
+        width: 100%;
+        min-height: 72px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        border: 1px solid #444;
+        background: #0d0d0d;
+        color: #eee;
+        padding: 10px 12px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        resize: vertical;
+      }
+
+      .admin-wish-status {
+        margin: 10px 0 0;
+        min-height: 1.2em;
+        font-size: 0.85rem;
+        color: #9ecbff;
+      }
+
+      .admin-wish-status.error {
+        color: #ff8a80;
+      }
+
+      .admin-wish-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .admin-wish-actions .got-it-btn {
+        flex: 1;
+      }
+
       .advancement-toast {
         position: fixed;
         left: 50%;
@@ -1067,6 +1307,15 @@
         box-shadow: 0 0 24px rgba(156, 39, 176, 0.65);
       }
 
+      .party-unwrap-box.theme-heatwave .party-unwrap-lid {
+        background: linear-gradient(180deg, #ff8a65, #ff5722);
+      }
+
+      .party-unwrap-box.theme-heatwave .party-unwrap-base {
+        background: linear-gradient(180deg, #ffeb3b, #f44336);
+        box-shadow: 0 0 22px rgba(255, 87, 34, 0.65);
+      }
+
       .party-unwrap-reveal {
         position: absolute;
         inset: 0;
@@ -1220,9 +1469,20 @@
     <main id="titleScreen" class="screen title-screen">
       <section class="title-card">
         <h1 class="game-title"><span class="red">Pokeball</span> Clicker</h1>
+        <p class="title-subtitle">點擊、升級、開箱。把你的 Pokecoins 推到極限。</p>
+
+        <ul class="title-steps" aria-label="How to play">
+          <li class="title-step"><span class="step-dot">1</span><span><b>點 Pokeball</b> 取得 Pokecoins。</span></li>
+          <li class="title-step"><span class="step-dot">2</span><span><b>開商店</b>（🛒）購買升級與 Lucky Blocks。</span></li>
+          <li class="title-step"><span class="step-dot">3</span><span><b>開背包</b>（🎒）來開啟 Lucky Blocks、製作物品、喝藥水。</span></li>
+          <li class="title-step"><span class="step-dot">4</span><span><b>Power-ups</b> 裝備後會提高每次點擊收益。</span></li>
+        </ul>
+
         <button id="playBtn" class="play-btn" type="button">Play</button>
-        <p class="note">Tap play to start collecting Pokecoins.</p>
-        <p class="warning">Using an auto-clicker is a loss for yourself.</p>
+        <p class="note">按下 Play 後音樂會開始（可在背包的 Settings 裡調整）。</p>
+        <div class="title-hint">
+          <strong>小提示</strong>：有些內容需要先在商店解鎖（例如更深的區域與特殊 Lucky Blocks）。如果按鈕沒反應，先重新整理（F5）並確認瀏覽器沒有擋住音訊播放。
+        </div>
       </section>
     </main>
 
@@ -1233,6 +1493,10 @@
         <div class="row">
           <span class="label" id="rainbowCounterLabel">Rainbow Coins: 0</span>
         </div>
+        <div id="luckClover" class="luck-clover hidden" aria-label="2x luck active">
+          <span aria-hidden="true">🍀</span>
+          <span id="luckCloverText">2× Luck: 0s</span>
+        </div>
         <button id="exportRainbowBtn" class="export-btn" type="button">Export Rainbow Coins</button>
       </div>
       <button id="goldCoinBtn" class="gold-coin hidden" type="button" aria-label="Golden coin"></button>
@@ -1240,6 +1504,7 @@
       <button id="backpackBtn" class="backpack-btn" type="button" aria-label="Open backpack">🎒</button>
       <div id="advancementToast" class="advancement-toast hidden" role="status" aria-live="polite"></div>
       <button id="shopBtn" class="shop-btn" type="button" aria-label="Open shop">🛒</button>
+
     </section>
 
     <div id="advancementsModal" class="advancements-modal hidden">
@@ -1375,6 +1640,48 @@
       </div>
     </div>
 
+    <div id="adminWishModal" class="adv-detail-modal hidden">
+      <div class="admin-wish-card">
+        <div class="shop-header">
+          <h4>Admin Wish List</h4>
+          <button id="closeAdminWishBtn" class="close-btn-icon" type="button" aria-label="Close admin wish list">X</button>
+        </div>
+        <p class="admin-wish-hint">
+          One wish per line: code then amount (e.g. <strong>NLB 5</strong> or <strong>NLBx5</strong>). Use seconds for
+          <strong>2xL</strong> (max 300). After redeeming, wait 1 hour before the next wish list.
+        </p>
+        <dl class="admin-wish-codes">
+          <dt>2xL</dt>
+          <dd>2× Luck — duration in seconds (max 300)</dd>
+          <dt>NLB</dt>
+          <dd>Normal Lucky Block (max 30)</dd>
+          <dt>PLB</dt>
+          <dd>Party Lucky Block (max 15)</dd>
+          <dt>GLB</dt>
+          <dd>Golden Lucky Block (max 20)</dd>
+          <dt>SLB</dt>
+          <dd>Shiny Lucky Block (max 20)</dd>
+          <dt>ALB</dt>
+          <dd>Angel Lucky Block (max 5)</dd>
+          <dt>PKC</dt>
+          <dd>Pokecoins (max 50,000)</dd>
+          <dt>RBC</dt>
+          <dd>Rainbow Coins (max 800)</dd>
+        </dl>
+        <textarea
+          id="adminWishInput"
+          class="admin-wish-input"
+          rows="4"
+          placeholder="NLB 10&#10;2xL 120&#10;PKC 5000"
+        ></textarea>
+        <p id="adminWishStatus" class="admin-wish-status"></p>
+        <div class="admin-wish-actions">
+          <button id="adminWishRedeemBtn" class="got-it-btn" type="button">Redeem</button>
+          <button id="adminWishCancelBtn" class="got-it-btn open-all-confirm-no" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
     <div id="equippedPokeballModal" class="equipped-pokeball-modal hidden">
       <div class="equipped-pokeball-card">
         <div class="shop-header">
@@ -1425,6 +1732,9 @@
           <button id="inventoryTabPowerUps" class="inventory-tab" type="button" role="tab" aria-selected="false">
             Power-ups
           </button>
+          <button id="inventoryTabSettings" class="inventory-tab" type="button" role="tab" aria-selected="false">
+            Settings
+          </button>
         </div>
 
         <div id="inventoryMainView" role="tabpanel">
@@ -1464,6 +1774,17 @@
             </div>
             <div id="corruptionLuckyBlockInvRow" class="inventory-lucky-row hidden" style="margin-top: 10px">
               <p id="invCorruptionLuckyBlocks" style="margin: 0; flex: 1">Corruption Lucky Blocks: 0</p>
+              <button id="openCorruptionLuckyBlockBtn" class="open-lucky-btn" type="button" disabled>Open</button>
+            </div>
+            <div id="opLuckyBlockInvRow" class="inventory-lucky-row hidden" style="margin-top: 10px">
+              <p id="invOpLuckyBlocks" style="margin: 0; flex: 1">OP Lucky Blocks: 0</p>
+            </div>
+            <div id="heatwaveLuckyBlockInvRow" class="inventory-lucky-row hidden" style="margin-top: 10px">
+              <p id="invHeatwaveLuckyBlocks" style="margin: 0; flex: 1">Heatwave Lucky Blocks: 0</p>
+              <button id="openHeatwaveLuckyBlockBtn" class="open-lucky-btn" type="button" disabled>Open</button>
+            </div>
+            <div id="demonLuckyBlockInvRow" class="inventory-lucky-row hidden" style="margin-top: 10px">
+              <p id="invDemonLuckyBlocks" style="margin: 0; flex: 1">Demon Lucky Blocks: 0</p>
             </div>
           </div>
 
@@ -1472,6 +1793,12 @@
             <p id="invGoldChunks">Pure Gold Chunks: 0</p>
             <p id="invLightite">Lightite: 0</p>
             <p id="invDiscoLights">Disco Lights: 0</p>
+            <p id="invScorchingHeatDisks" class="hidden">Scorching Heat Disks: 0</p>
+            <p id="invGameBugs" class="hidden">Game Bugs: 0</p>
+            <div class="inventory-lucky-row" style="margin-top: 10px">
+              <p id="invLuckPotions" class="hidden" style="margin: 0; flex: 1">2× Luck Potions: 0</p>
+              <button id="drinkLuckPotionBtn" class="open-lucky-btn" type="button" disabled>Drink</button>
+            </div>
             <p id="invGoldenHalo" class="hidden">Golden Halo: 0</p>
             <p id="invAngelWings" class="hidden">Angel Wings: 0</p>
           </div>
@@ -1541,6 +1868,33 @@
               Equip up to 2 at a time (no upgrades). Rarity is flair — drop odds are hidden.
             </p>
             <ul id="powerUpCatalog" class="powerup-catalog"></ul>
+          </div>
+        </div>
+
+        <div id="inventorySettingsView" class="hidden" role="tabpanel">
+          <div class="shop-header">
+            <h2>Settings</h2>
+            <button id="closeInventoryBtnSettings" class="close-btn-icon" type="button" aria-label="Close settings">
+              X
+            </button>
+          </div>
+          <div class="shop-section">
+            <h3>Ambience Music</h3>
+            <p style="margin-top: 6px; color: #999; font-size: 0.85rem; line-height: 1.35">
+              Starts when you press Play (browser autoplay rules).
+            </p>
+            <div class="music-controls" aria-label="Ambience music controls">
+              <button id="musicToggleBtn" class="music-btn" type="button" aria-label="Toggle ambience music">Music</button>
+              <input
+                id="musicVolume"
+                class="music-volume"
+                type="range"
+                min="0"
+                max="100"
+                value="35"
+                aria-label="Music volume"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -1701,6 +2055,31 @@
                 <button id="buyGoldenLuckyBlockBtn" class="pay-btn" type="button">Buy 4,000</button>
               </div>
             </div>
+            <div id="heatwaveLuckyBlockShopRow" style="margin-top: 12px">
+              <p>Heatwave Lucky Block - 80,000 Pokecoins</p>
+              <p style="margin: 6px 0 0; color: #bbb; font-size: 0.85rem">Goes to your backpack. Open it there.</p>
+              <div class="shop-actions">
+                <button id="buyHeatwaveLuckyBlockBtn" class="pay-btn" type="button">Buy 80,000</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="hopGamesSlashSection" class="shop-section hidden">
+          <h3>&lt;/&gt;</h3>
+          <div id="hopGamesSlashLocked">
+            <p>Pay 300,000 Pokecoins to unlock.</p>
+            <p style="margin: 6px 0 0; color: #bbb; font-size: 0.85rem; line-height: 1.35">
+              Hop between games to beat this section. Requires Deeper into the start 2.
+            </p>
+            <div class="shop-actions">
+              <button id="buyHopGamesSlashBtn" class="pay-btn" type="button">Pay 300,000</button>
+            </div>
+          </div>
+          <div id="hopGamesSlashUnlocked" class="hidden">
+            <p style="margin: 0; line-height: 1.45; color: #d7d7d7">
+              Please go to Fishing World to find a banner stone.
+            </p>
           </div>
         </div>
 
@@ -1717,6 +2096,7 @@
       const RAINBOW_UNLOCKED_KEY = "pokeball_clicker_rainbow_unlocked";
       const DEEPER_START_UNLOCKED_KEY = "pokeball_clicker_deeper_start_unlocked";
       const DEEPER_START_2_UNLOCKED_KEY = "pokeball_clicker_deeper_start_2_unlocked";
+      const HOP_GAMES_SLASH_UNLOCKED_KEY = "pokeball_clicker_hop_games_slash_unlocked";
       const GREAT_BALL_PERMANENT_KEY = "pokeball_clicker_great_ball_permanent";
       const LUCKY_BLOCKS_KEY = "pokeball_clicker_lucky_blocks";
       const PARTY_LUCKY_BLOCKS_KEY = "pokeball_clicker_party_lucky_blocks";
@@ -1724,6 +2104,12 @@
       const SHINY_LUCKY_BLOCKS_KEY = "pokeball_clicker_shiny_lucky_blocks";
       const ANGEL_LUCKY_BLOCKS_KEY = "pokeball_clicker_angel_lucky_blocks";
       const CORRUPTION_LUCKY_BLOCKS_KEY = "pokeball_clicker_corruption_lucky_blocks";
+      const OP_LUCKY_BLOCKS_KEY = "pokeball_clicker_op_lucky_blocks";
+      const HEATWAVE_LUCKY_BLOCKS_KEY = "pokeball_clicker_heatwave_lucky_blocks";
+      const DEMON_LUCKY_BLOCKS_KEY = "pokeball_clicker_demon_lucky_blocks";
+      const SCORCHING_HEAT_DISKS_KEY = "pokeball_clicker_scorching_heat_disks";
+      const GAME_BUGS_KEY = "pokeball_clicker_game_bugs";
+      const LUCK_POTIONS_KEY = "pokeball_clicker_luck_potions";
       const LIGHTITE_KEY = "pokeball_clicker_lightite";
       const GOLDEN_HALO_KEY = "pokeball_clicker_golden_halo";
       const ANGEL_WINGS_KEY = "pokeball_clicker_angel_wings";
@@ -1760,11 +2146,29 @@
       const MILLIONAIRE_POKECOINS = 1000000;
       const DEEPER_START_COST = 20000;
       const DEEPER_START_2_COST = 75000;
+      const HOP_GAMES_SLASH_COST = 300000;
       const GREAT_BALL_COST = 10000;
       const LUCKY_BLOCK_COST = 1000;
       const GOLDEN_LUCKY_BLOCK_COST = 4000;
+      /** Set false to disable Heatwave Lucky Block (shop, inventory, unwrap). */
+      const ENABLE_HEATWAVE_LUCKY_BLOCK = true;
+      const HEATWAVE_LUCKY_BLOCK_COST = 80000;
       const UNIFIED_SAVE_KEY = "pokeball_clicker_unified_save";
-      const SAVE_SCHEMA_VERSION = 11;
+      const SAVE_SCHEMA_VERSION = 14;
+      const ADMIN_WISH_COOLDOWN_MS = 60 * 60 * 1000;
+      const ADMIN_WISH_SECRET_IAMADMINV = "IAMADMINV";
+      const ADMIN_WISH_SECRET_OPLB = "OPLB";
+
+      const ADMIN_WISH_PUBLIC = {
+        "2XL": { label: "2× Luck", isDuration: true, max: 300 },
+        NLB: { label: "Normal Lucky Block", max: 30 },
+        PLB: { label: "Party Lucky Block", max: 15 },
+        GLB: { label: "Golden Lucky Block", max: 20 },
+        SLB: { label: "Shiny Lucky Block", max: 20 },
+        ALB: { label: "Angel Lucky Block", max: 5 },
+        PKC: { label: "Pokecoins", max: 50000 },
+        RBC: { label: "Rainbow Coins", max: 800 },
+      };
       const BASE_POWER_UP_EQUIP_SLOTS = 2;
 
       /** Display rarity vs hidden dropWeight (sums to 100). */
@@ -1793,12 +2197,38 @@
         { id: "pwr_ascension", name: "Ascension", rarityOneIn: 170, dropWeight: 5, clickBonus: 7 },
         { id: "pwr_heavenly", name: "Heavenly", rarityOneIn: 1050, dropWeight: 1, clickBonus: 10 },
       ];
+
+      const CORRUPTED_POWER_UPS = [
+        { id: "cor_glitched", name: "Glitched", rarityOneIn: 210, dropWeight: 0, clickBonus: 3 },
+        { id: "cor_decaying", name: "Decaying", rarityOneIn: 300, dropWeight: 0, clickBonus: 5 },
+      ];
+
+      /** HEATWAVE — remove block when feature is dropped. */
+      const HEATWAVE_POWER_UPS = [
+        { id: "heat_hot", name: "Hot", rarityOneIn: 310, dropWeight: 30, clickBonus: 5 },
+        { id: "heat_burning", name: "Burning", rarityOneIn: 700, dropWeight: 15, clickBonus: 8 },
+        { id: "heat_flaming", name: "Flaming", rarityOneIn: 700, dropWeight: 15, clickBonus: 8 },
+        { id: "heat_blazing", name: "Blazing", rarityOneIn: 700, dropWeight: 15, clickBonus: 8 },
+        { id: "heat_demonic", name: "Demonic", rarityOneIn: 3500, dropWeight: 1, clickBonus: 19 },
+      ];
+
+      const HEATWAVE_DROPS = [
+        { weight: 30, type: "powerup", id: "heat_hot" },
+        { weight: 20, type: "item", id: "scorching_heat_disk" },
+        { weight: 15, type: "powerup", id: "heat_burning" },
+        { weight: 15, type: "powerup", id: "heat_flaming" },
+        { weight: 15, type: "powerup", id: "heat_blazing" },
+        { weight: 4, type: "block", id: "demon_lucky_block" },
+        { weight: 1, type: "powerup", id: "heat_demonic" },
+      ];
       const titleScreen = document.getElementById("titleScreen");
       const gameScreen = document.getElementById("gameScreen");
       const playBtn = document.getElementById("playBtn");
       const pokeballBtn = document.getElementById("pokeballBtn");
       const coinCounter = document.getElementById("coinCounter");
       const rainbowCounterLabel = document.getElementById("rainbowCounterLabel");
+      const luckClover = document.getElementById("luckClover");
+      const luckCloverText = document.getElementById("luckCloverText");
       const goldCoinBtn = document.getElementById("goldCoinBtn");
       const backpackBtn = document.getElementById("backpackBtn");
       const exportRainbowBtn = document.getElementById("exportRainbowBtn");
@@ -1823,6 +2253,8 @@
       const invDiscoLights = document.getElementById("invDiscoLights");
       const invGoldenHalo = document.getElementById("invGoldenHalo");
       const invAngelWings = document.getElementById("invAngelWings");
+      const musicToggleBtn = document.getElementById("musicToggleBtn");
+      const musicVolume = document.getElementById("musicVolume");
       const openLuckyBlockBtn = document.getElementById("openLuckyBlockBtn");
       const openPartyLuckyBlockBtn = document.getElementById("openPartyLuckyBlockBtn");
       const openGoldenLuckyBlockBtn = document.getElementById("openGoldenLuckyBlockBtn");
@@ -1834,8 +2266,20 @@
       const openAngelLuckyBlockBtn = document.getElementById("openAngelLuckyBlockBtn");
       const invCorruptionLuckyBlocks = document.getElementById("invCorruptionLuckyBlocks");
       const corruptionLuckyBlockInvRow = document.getElementById("corruptionLuckyBlockInvRow");
+      const openCorruptionLuckyBlockBtn = document.getElementById("openCorruptionLuckyBlockBtn");
       const buyLuckyBlockBtn = document.getElementById("buyLuckyBlockBtn");
       const buyGoldenLuckyBlockBtn = document.getElementById("buyGoldenLuckyBlockBtn");
+      const buyHeatwaveLuckyBlockBtn = document.getElementById("buyHeatwaveLuckyBlockBtn");
+      const heatwaveLuckyBlockShopRow = document.getElementById("heatwaveLuckyBlockShopRow");
+      const openHeatwaveLuckyBlockBtn = document.getElementById("openHeatwaveLuckyBlockBtn");
+      const invHeatwaveLuckyBlocks = document.getElementById("invHeatwaveLuckyBlocks");
+      const heatwaveLuckyBlockInvRow = document.getElementById("heatwaveLuckyBlockInvRow");
+      const invDemonLuckyBlocks = document.getElementById("invDemonLuckyBlocks");
+      const demonLuckyBlockInvRow = document.getElementById("demonLuckyBlockInvRow");
+      const invScorchingHeatDisks = document.getElementById("invScorchingHeatDisks");
+      const invGameBugs = document.getElementById("invGameBugs");
+      const invLuckPotions = document.getElementById("invLuckPotions");
+      const drinkLuckPotionBtn = document.getElementById("drinkLuckPotionBtn");
       const partyUnwrapModal = document.getElementById("partyUnwrapModal");
       const partyUnwrapTitle = document.getElementById("partyUnwrapTitle");
       const partyUnwrapBox = document.getElementById("partyUnwrapBox");
@@ -1847,11 +2291,14 @@
       const inventoryMainView = document.getElementById("inventoryMainView");
       const inventoryCraftingView = document.getElementById("inventoryCraftingView");
       const inventoryPowerUpsView = document.getElementById("inventoryPowerUpsView");
+      const inventorySettingsView = document.getElementById("inventorySettingsView");
       const inventoryTabBackpack = document.getElementById("inventoryTabBackpack");
       const inventoryTabCrafting = document.getElementById("inventoryTabCrafting");
       const inventoryTabPowerUps = document.getElementById("inventoryTabPowerUps");
+      const inventoryTabSettings = document.getElementById("inventoryTabSettings");
       const closeInventoryBtnCrafting = document.getElementById("closeInventoryBtnCrafting");
       const closeInventoryBtnPowerUps = document.getElementById("closeInventoryBtnPowerUps");
+      const closeInventoryBtnSettings = document.getElementById("closeInventoryBtnSettings");
       const powerUpCatalog = document.getElementById("powerUpCatalog");
       const craftGoldChunkBtn = document.getElementById("craftGoldChunkBtn");
       const craftPartyLuckyBlockBtn = document.getElementById("craftPartyLuckyBlockBtn");
@@ -1873,6 +2320,14 @@
       const openAllConfirmText = document.getElementById("openAllConfirmText");
       const openAllConfirmYes = document.getElementById("openAllConfirmYes");
       const openAllConfirmNo = document.getElementById("openAllConfirmNo");
+      const adminWishModal = document.getElementById("adminWishModal");
+      const adminWishInput = document.getElementById("adminWishInput");
+      const adminWishStatus = document.getElementById("adminWishStatus");
+      const adminWishRedeemBtn = document.getElementById("adminWishRedeemBtn");
+      const adminWishCancelBtn = document.getElementById("adminWishCancelBtn");
+      const closeAdminWishBtn = document.getElementById("closeAdminWishBtn");
+      const invOpLuckyBlocks = document.getElementById("invOpLuckyBlocks");
+      const opLuckyBlockInvRow = document.getElementById("opLuckyBlockInvRow");
       const equippedPokeballModal = document.getElementById("equippedPokeballModal");
       const closeEquippedPokeballBtn = document.getElementById("closeEquippedPokeballBtn");
       const equipNormalPokeballBtn = document.getElementById("equipNormalPokeballBtn");
@@ -1897,6 +2352,10 @@
       const deeperStart2Locked = document.getElementById("deeperStart2Locked");
       const deeperStart2UnlockedEl = document.getElementById("deeperStart2Unlocked");
       const buyDeeperStart2Btn = document.getElementById("buyDeeperStart2Btn");
+      const hopGamesSlashSection = document.getElementById("hopGamesSlashSection");
+      const hopGamesSlashLocked = document.getElementById("hopGamesSlashLocked");
+      const hopGamesSlashUnlockedEl = document.getElementById("hopGamesSlashUnlocked");
+      const buyHopGamesSlashBtn = document.getElementById("buyHopGamesSlashBtn");
       const greatBallShopLocked = document.getElementById("greatBallShopLocked");
       const greatBallShopOwned = document.getElementById("greatBallShopOwned");
       const buyGreatBallBtn = document.getElementById("buyGreatBallBtn");
@@ -1971,6 +2430,7 @@
       let rainbowUnlockedFlag = false;
       let deeperStartUnlocked = false;
       let deeperStart2Unlocked = false;
+      let hopGamesSlashUnlocked = false;
       let greatBallPermanent = false;
       let equippedPokeball = "normal";
       let luckyBlocks = 0;
@@ -1982,6 +2442,293 @@
       let corruptionClickProgress = 0;
       let corruptionPokeballActive = false;
       const CORRUPTION_CLICKS_TARGET = 4000;
+      let opLuckyBlocks = 0;
+      let heatwaveLuckyBlocks = 0;
+      let demonLuckyBlocks = 0;
+      let scorchingHeatDisks = 0;
+      let gameBugs = 0;
+      let luckPotions = 0;
+
+      const SUGGESTED_VOICE_CHANCE = 0.25;
+      const LUCK_POTION_MS = 3 * 60 * 1000;
+
+      const AMBIENCE_ENABLED_KEY = "pokeball_clicker_ambience_enabled";
+      const AMBIENCE_VOLUME_KEY = "pokeball_clicker_ambience_volume";
+      let ambienceEnabled = true;
+      let ambienceVolume = 0.35;
+      let ambienceStarted = false;
+      let ambienceCtx = null;
+      let ambienceMaster = null;
+      let ambienceNodes = [];
+      let ambienceChordTimer = null;
+      let ambienceSparkleTimer = null;
+
+      function clamp01(n) {
+        return Math.min(1, Math.max(0, n));
+      }
+
+      function loadAmbiencePrefs() {
+        const enabledRaw = localStorage.getItem(AMBIENCE_ENABLED_KEY);
+        if (enabledRaw === "false") ambienceEnabled = false;
+        if (enabledRaw === "true") ambienceEnabled = true;
+        const volRaw = Number(localStorage.getItem(AMBIENCE_VOLUME_KEY));
+        if (Number.isFinite(volRaw)) ambienceVolume = clamp01(volRaw);
+      }
+
+      function saveAmbiencePrefs() {
+        localStorage.setItem(AMBIENCE_ENABLED_KEY, ambienceEnabled ? "true" : "false");
+        localStorage.setItem(AMBIENCE_VOLUME_KEY, String(clamp01(ambienceVolume)));
+      }
+
+      function renderAmbienceControls() {
+        if (musicToggleBtn) {
+          musicToggleBtn.classList.toggle("off", !ambienceEnabled);
+          musicToggleBtn.textContent = ambienceEnabled ? "Music" : "Music Off";
+        }
+        if (musicVolume) {
+          musicVolume.value = String(Math.round(clamp01(ambienceVolume) * 100));
+        }
+      }
+
+      function syncModalHudState() {
+        const open =
+          !shopModal?.classList.contains("hidden") ||
+          !inventoryModal?.classList.contains("hidden") ||
+          !exportModal?.classList.contains("hidden") ||
+          !advancementsModal?.classList.contains("hidden") ||
+          !advDetailModal?.classList.contains("hidden") ||
+          !equippedPokeballModal?.classList.contains("hidden") ||
+          !adminWishModal?.classList.contains("hidden") ||
+          !openAllConfirmModal?.classList.contains("hidden") ||
+          !partyUnwrapModal?.classList.contains("hidden");
+        document.body.classList.toggle("modal-open", open);
+      }
+
+      function ensureAmbienceGraph() {
+        if (ambienceCtx) return;
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        ambienceCtx = new Ctx();
+        ambienceMaster = ambienceCtx.createGain();
+        ambienceMaster.gain.value = 0;
+        ambienceMaster.connect(ambienceCtx.destination);
+
+        // Space ambience: big reverb + delay, deep drone, subtle noise, occasional sparkles.
+        const dry = ambienceCtx.createGain();
+        dry.gain.value = 0.55;
+        const wet = ambienceCtx.createGain();
+        wet.gain.value = 0.6;
+
+        const mix = ambienceCtx.createGain();
+        mix.gain.value = 1;
+        dry.connect(mix);
+        wet.connect(mix);
+
+        const spaceLP = ambienceCtx.createBiquadFilter();
+        spaceLP.type = "lowpass";
+        spaceLP.frequency.value = 1400;
+        spaceLP.Q.value = 0.55;
+        mix.connect(spaceLP);
+        spaceLP.connect(ambienceMaster);
+
+        // Slow filter drift
+        const lpLfo = ambienceCtx.createOscillator();
+        lpLfo.type = "sine";
+        lpLfo.frequency.value = 0.03;
+        const lpLfoDepth = ambienceCtx.createGain();
+        lpLfoDepth.gain.value = 420;
+        lpLfo.connect(lpLfoDepth);
+        lpLfoDepth.connect(spaceLP.frequency);
+        lpLfo.start();
+
+        // Generated impulse response (small-ish CPU, big space feel)
+        const irSeconds = 3.2;
+        const irLen = Math.floor(ambienceCtx.sampleRate * irSeconds);
+        const ir = ambienceCtx.createBuffer(2, irLen, ambienceCtx.sampleRate);
+        for (let ch = 0; ch < 2; ch++) {
+          const c = ir.getChannelData(ch);
+          for (let i = 0; i < irLen; i++) {
+            const t = i / irLen;
+            const decay = Math.pow(1 - t, 3.4);
+            c[i] = (Math.random() * 2 - 1) * decay * 0.55;
+          }
+        }
+        const convolver = ambienceCtx.createConvolver();
+        convolver.buffer = ir;
+
+        const reverbPre = ambienceCtx.createGain();
+        reverbPre.gain.value = 0.9;
+        reverbPre.connect(convolver);
+        convolver.connect(wet);
+
+        // Feedback delay for that "floating in space" tail
+        const delay = ambienceCtx.createDelay(1.4);
+        delay.delayTime.value = 0.42;
+        const fb = ambienceCtx.createGain();
+        fb.gain.value = 0.42;
+        const delayLP = ambienceCtx.createBiquadFilter();
+        delayLP.type = "lowpass";
+        delayLP.frequency.value = 1200;
+        delayLP.Q.value = 0.35;
+        delay.connect(delayLP);
+        delayLP.connect(fb);
+        fb.connect(delay);
+
+        const fxBus = ambienceCtx.createGain();
+        fxBus.gain.value = 0.85;
+        fxBus.connect(dry);
+        fxBus.connect(delay);
+        delay.connect(reverbPre);
+
+        // Deep drone (two oscillators, gentle beating)
+        const droneGain = ambienceCtx.createGain();
+        droneGain.gain.value = 0.22;
+        const droneLP = ambienceCtx.createBiquadFilter();
+        droneLP.type = "lowpass";
+        droneLP.frequency.value = 520;
+        droneLP.Q.value = 0.6;
+        droneGain.connect(droneLP);
+        droneLP.connect(fxBus);
+
+        const d1 = ambienceCtx.createOscillator();
+        d1.type = "sine";
+        const d2 = ambienceCtx.createOscillator();
+        d2.type = "triangle";
+        d2.detune.value = 7;
+        d1.connect(droneGain);
+        d2.connect(droneGain);
+        d1.start();
+        d2.start();
+
+        const setDrone = (rootHz, t) => {
+          const now = t ?? ambienceCtx.currentTime;
+          d1.frequency.cancelScheduledValues(now);
+          d2.frequency.cancelScheduledValues(now);
+          d1.frequency.setTargetAtTime(rootHz, now, 2.2);
+          d2.frequency.setTargetAtTime(rootHz * 0.5, now, 2.2);
+        };
+
+        // Subtle noise "cosmic wind" (bandpass, very low)
+        const noiseBuf = ambienceCtx.createBuffer(1, ambienceCtx.sampleRate * 2, ambienceCtx.sampleRate);
+        const nd = noiseBuf.getChannelData(0);
+        for (let i = 0; i < nd.length; i++) nd[i] = (Math.random() * 2 - 1) * 0.12;
+        const noise = ambienceCtx.createBufferSource();
+        noise.buffer = noiseBuf;
+        noise.loop = true;
+        const noiseBP = ambienceCtx.createBiquadFilter();
+        noiseBP.type = "bandpass";
+        noiseBP.frequency.value = 220;
+        noiseBP.Q.value = 0.8;
+        const noiseGain = ambienceCtx.createGain();
+        noiseGain.gain.value = 0.12;
+        noise.connect(noiseBP);
+        noiseBP.connect(noiseGain);
+        noiseGain.connect(reverbPre);
+        noise.start();
+
+        // Occasional high "sparkle" bleeps with long tail
+        const sparkleOut = ambienceCtx.createGain();
+        sparkleOut.gain.value = 0.6;
+        sparkleOut.connect(reverbPre);
+        sparkleOut.connect(delay);
+
+        const sparkle = () => {
+          if (!ambienceCtx) return;
+          const now = ambienceCtx.currentTime;
+          const o = ambienceCtx.createOscillator();
+          o.type = "sine";
+          const g = ambienceCtx.createGain();
+          g.gain.value = 0;
+          const hp = ambienceCtx.createBiquadFilter();
+          hp.type = "highpass";
+          hp.frequency.value = 800;
+          const base = 520 + Math.random() * 1500;
+          o.frequency.setValueAtTime(base, now);
+          o.frequency.exponentialRampToValueAtTime(Math.max(120, base * 0.55), now + 0.22);
+          g.gain.setValueAtTime(0.0001, now);
+          g.gain.exponentialRampToValueAtTime(0.22, now + 0.015);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+          o.connect(g);
+          g.connect(hp);
+          hp.connect(sparkleOut);
+          o.start(now);
+          o.stop(now + 0.9);
+        };
+
+        // Spacey chord movement (roots picked for "void" feel)
+        const roots = [55.0, 49.0, 61.735, 46.25]; // A1, G1, B1, F#1-ish
+        let chordIdx = 0;
+        setDrone(roots[chordIdx], ambienceCtx.currentTime);
+        ambienceChordTimer = setInterval(() => {
+          if (!ambienceCtx) return;
+          chordIdx = (chordIdx + 1) % roots.length;
+          setDrone(roots[chordIdx], ambienceCtx.currentTime);
+        }, 16000);
+
+        // Sparkles are sparse and random
+        ambienceSparkleTimer = setInterval(() => {
+          if (!ambienceCtx || !ambienceEnabled) return;
+          if (Math.random() < 0.55) sparkle();
+        }, 2600);
+
+        ambienceNodes = [
+          dry,
+          wet,
+          mix,
+          spaceLP,
+          lpLfo,
+          lpLfoDepth,
+          convolver,
+          reverbPre,
+          delay,
+          fb,
+          delayLP,
+          fxBus,
+          droneGain,
+          droneLP,
+          d1,
+          d2,
+          noise,
+          noiseBP,
+          noiseGain,
+          sparkleOut,
+        ];
+      }
+
+      async function startAmbienceMusic() {
+        ambienceStarted = true;
+        ensureAmbienceGraph();
+        if (!ambienceCtx || !ambienceMaster) return;
+        if (ambienceCtx.state !== "running") {
+          try {
+            await ambienceCtx.resume();
+          } catch {}
+        }
+        const target = ambienceEnabled ? clamp01(ambienceVolume) : 0;
+        const now = ambienceCtx.currentTime;
+        ambienceMaster.gain.cancelScheduledValues(now);
+        ambienceMaster.gain.setTargetAtTime(target, now, 0.25);
+      }
+
+      function stopAmbienceMusic() {
+        if (!ambienceCtx || !ambienceMaster) return;
+        const now = ambienceCtx.currentTime;
+        ambienceMaster.gain.cancelScheduledValues(now);
+        ambienceMaster.gain.setTargetAtTime(0, now, 0.18);
+      }
+
+      function syncAmbienceVolume() {
+        if (!ambienceCtx || !ambienceMaster) return;
+        const now = ambienceCtx.currentTime;
+        const target = ambienceEnabled ? clamp01(ambienceVolume) : 0;
+        ambienceMaster.gain.cancelScheduledValues(now);
+        ambienceMaster.gain.setTargetAtTime(target, now, 0.2);
+      }
+      let luck2xUntil = 0;
+      let luck2xTimeout = null;
+      let luck2xTick = null;
+      let adminWishCooldownUntil = 0;
+      let adminWishCooldownBypass = false;
       let lightite = 0;
       let shinyPokeballClickCount = 0;
       let discoLights = 0;
@@ -1991,7 +2738,9 @@
       let ownedPowerUps = createDefaultOwnedPowerUps();
 
       function getAllPowerUpDefs() {
-        return [...POWER_UPS, ...SHINY_POWER_UPS, ...ANGEL_POWER_UPS];
+        const base = [...POWER_UPS, ...SHINY_POWER_UPS, ...ANGEL_POWER_UPS, ...CORRUPTED_POWER_UPS];
+        if (ENABLE_HEATWAVE_LUCKY_BLOCK) base.push(...HEATWAVE_POWER_UPS);
+        return base;
       }
 
       function createDefaultOwnedPowerUps() {
@@ -2100,6 +2849,21 @@
           if (v === 11) {
             data.corruptionClickProgress = clampNonNegNum(data.corruptionClickProgress ?? 0);
           }
+          if (v === 12) {
+            data.opLuckyBlocks = clampNonNegNum(data.opLuckyBlocks ?? 0);
+            data.luck2xUntil = clampNonNegNum(data.luck2xUntil ?? 0);
+            data.adminWishCooldownUntil = clampNonNegNum(data.adminWishCooldownUntil ?? 0);
+            data.adminWishCooldownBypass = Boolean(data.adminWishCooldownBypass);
+          }
+          if (v === 13) {
+            data.hopGamesSlashUnlocked = Boolean(data.hopGamesSlashUnlocked);
+          }
+          if (v === 14) {
+            data.heatwaveLuckyBlocks = clampNonNegNum(data.heatwaveLuckyBlocks ?? 0);
+            data.demonLuckyBlocks = clampNonNegNum(data.demonLuckyBlocks ?? 0);
+            data.scorchingHeatDisks = clampNonNegNum(data.scorchingHeatDisks ?? 0);
+            data.ownedPowerUps = mergeOwnedPowerUps(data.ownedPowerUps);
+          }
         }
         if (typeof data.schemaVersion !== "number" || data.schemaVersion < SAVE_SCHEMA_VERSION) {
           data.schemaVersion = SAVE_SCHEMA_VERSION;
@@ -2117,6 +2881,7 @@
         data.equippedPowerUpIds = sanitizeEquippedPowerUpIds(rawEquipped, data.ownedPowerUps);
         delete data.equippedPowerUpId;
         data.deeperStart2Unlocked = Boolean(data.deeperStart2Unlocked);
+        data.hopGamesSlashUnlocked = Boolean(data.hopGamesSlashUnlocked);
         data.goldenLuckyBlocks = clampNonNegNum(data.goldenLuckyBlocks ?? 0);
         data.shinyLuckyBlocks = clampNonNegNum(data.shinyLuckyBlocks ?? 0);
         data.angelLuckyBlocks = clampNonNegNum(data.angelLuckyBlocks ?? 0);
@@ -2124,6 +2889,13 @@
         data.angelWings = clampNonNegNum(data.angelWings ?? 0);
         data.corruptionLuckyBlocks = clampNonNegNum(data.corruptionLuckyBlocks ?? 0);
         data.corruptionClickProgress = clampNonNegNum(data.corruptionClickProgress ?? 0);
+        data.opLuckyBlocks = clampNonNegNum(data.opLuckyBlocks ?? 0);
+        data.luck2xUntil = clampNonNegNum(data.luck2xUntil ?? 0);
+        data.adminWishCooldownUntil = clampNonNegNum(data.adminWishCooldownUntil ?? 0);
+        data.adminWishCooldownBypass = Boolean(data.adminWishCooldownBypass);
+        data.heatwaveLuckyBlocks = clampNonNegNum(data.heatwaveLuckyBlocks ?? 0);
+        data.demonLuckyBlocks = clampNonNegNum(data.demonLuckyBlocks ?? 0);
+        data.scorchingHeatDisks = clampNonNegNum(data.scorchingHeatDisks ?? 0);
         data.equippedPokeball = sanitizeEquippedPokeball(data.equippedPokeball, data.greatBallPermanent);
         return data;
       }
@@ -2158,6 +2930,7 @@
           rainbowUnlockedFlag,
           deeperStartUnlocked,
           deeperStart2Unlocked,
+          hopGamesSlashUnlocked,
           greatBallPermanent,
           equippedPokeball,
           luckyBlocks,
@@ -2167,6 +2940,15 @@
           angelLuckyBlocks,
           corruptionLuckyBlocks,
           corruptionClickProgress,
+          opLuckyBlocks,
+          heatwaveLuckyBlocks,
+          demonLuckyBlocks,
+          scorchingHeatDisks,
+          gameBugs,
+          luckPotions,
+          luck2xUntil,
+          adminWishCooldownUntil,
+          adminWishCooldownBypass,
           lightite,
           discoLights,
           goldenHalo,
@@ -2189,6 +2971,7 @@
         localStorage.setItem(RAINBOW_UNLOCKED_KEY, rainbowUnlockedFlag ? "true" : "false");
         localStorage.setItem(DEEPER_START_UNLOCKED_KEY, deeperStartUnlocked ? "true" : "false");
         localStorage.setItem(DEEPER_START_2_UNLOCKED_KEY, deeperStart2Unlocked ? "true" : "false");
+        localStorage.setItem(HOP_GAMES_SLASH_UNLOCKED_KEY, hopGamesSlashUnlocked ? "true" : "false");
         localStorage.setItem(GREAT_BALL_PERMANENT_KEY, greatBallPermanent ? "true" : "false");
         localStorage.setItem(LUCKY_BLOCKS_KEY, String(luckyBlocks));
         localStorage.setItem(PARTY_LUCKY_BLOCKS_KEY, String(partyLuckyBlocks));
@@ -2196,6 +2979,12 @@
         localStorage.setItem(SHINY_LUCKY_BLOCKS_KEY, String(shinyLuckyBlocks));
         localStorage.setItem(ANGEL_LUCKY_BLOCKS_KEY, String(angelLuckyBlocks));
         localStorage.setItem(CORRUPTION_LUCKY_BLOCKS_KEY, String(corruptionLuckyBlocks));
+        localStorage.setItem(OP_LUCKY_BLOCKS_KEY, String(opLuckyBlocks));
+        localStorage.setItem(HEATWAVE_LUCKY_BLOCKS_KEY, String(heatwaveLuckyBlocks));
+        localStorage.setItem(DEMON_LUCKY_BLOCKS_KEY, String(demonLuckyBlocks));
+        localStorage.setItem(SCORCHING_HEAT_DISKS_KEY, String(scorchingHeatDisks));
+        localStorage.setItem(GAME_BUGS_KEY, String(gameBugs));
+        localStorage.setItem(LUCK_POTIONS_KEY, String(luckPotions));
         localStorage.setItem(LIGHTITE_KEY, String(lightite));
         localStorage.setItem(DISCO_LIGHTS_KEY, String(discoLights));
         localStorage.setItem(GOLDEN_HALO_KEY, String(goldenHalo));
@@ -2244,6 +3033,7 @@
           rainbowUnlockedFlag = Boolean(data.rainbowUnlockedFlag);
           deeperStartUnlocked = Boolean(data.deeperStartUnlocked);
           deeperStart2Unlocked = Boolean(data.deeperStart2Unlocked);
+          hopGamesSlashUnlocked = Boolean(data.hopGamesSlashUnlocked);
           greatBallPermanent = Boolean(data.greatBallPermanent);
           equippedPokeball = sanitizeEquippedPokeball(data.equippedPokeball, greatBallPermanent);
           luckyBlocks = clampNonNegNum(data.luckyBlocks);
@@ -2253,6 +3043,15 @@
           angelLuckyBlocks = clampNonNegNum(data.angelLuckyBlocks);
           corruptionLuckyBlocks = clampNonNegNum(data.corruptionLuckyBlocks);
           corruptionClickProgress = clampNonNegNum(data.corruptionClickProgress);
+          opLuckyBlocks = clampNonNegNum(data.opLuckyBlocks);
+          heatwaveLuckyBlocks = clampNonNegNum(data.heatwaveLuckyBlocks);
+          demonLuckyBlocks = clampNonNegNum(data.demonLuckyBlocks);
+          scorchingHeatDisks = clampNonNegNum(data.scorchingHeatDisks);
+          gameBugs = clampNonNegNum(data.gameBugs);
+          luckPotions = clampNonNegNum(data.luckPotions);
+          luck2xUntil = clampNonNegNum(data.luck2xUntil);
+          adminWishCooldownUntil = clampNonNegNum(data.adminWishCooldownUntil);
+          adminWishCooldownBypass = Boolean(data.adminWishCooldownBypass);
           lightite = clampNonNegNum(data.lightite);
           discoLights = clampNonNegNum(data.discoLights);
           goldenHalo = clampNonNegNum(data.goldenHalo);
@@ -2289,6 +3088,7 @@
         rainbowUnlockedFlag = loadFlag(RAINBOW_UNLOCKED_KEY);
         deeperStartUnlocked = loadFlag(DEEPER_START_UNLOCKED_KEY);
         deeperStart2Unlocked = loadFlag(DEEPER_START_2_UNLOCKED_KEY);
+        hopGamesSlashUnlocked = loadFlag(HOP_GAMES_SLASH_UNLOCKED_KEY);
         greatBallPermanent = loadFlag(GREAT_BALL_PERMANENT_KEY);
         equippedPokeball = greatBallPermanent ? "great" : "normal";
         luckyBlocks = loadIntKey(LUCKY_BLOCKS_KEY);
@@ -2297,6 +3097,15 @@
         shinyLuckyBlocks = loadIntKey(SHINY_LUCKY_BLOCKS_KEY);
         angelLuckyBlocks = loadIntKey(ANGEL_LUCKY_BLOCKS_KEY);
         corruptionLuckyBlocks = loadIntKey(CORRUPTION_LUCKY_BLOCKS_KEY);
+        opLuckyBlocks = loadIntKey(OP_LUCKY_BLOCKS_KEY);
+        heatwaveLuckyBlocks = loadIntKey(HEATWAVE_LUCKY_BLOCKS_KEY);
+        demonLuckyBlocks = loadIntKey(DEMON_LUCKY_BLOCKS_KEY);
+        scorchingHeatDisks = loadIntKey(SCORCHING_HEAT_DISKS_KEY);
+        gameBugs = loadIntKey(GAME_BUGS_KEY);
+        luckPotions = loadIntKey(LUCK_POTIONS_KEY);
+        luck2xUntil = 0;
+        adminWishCooldownUntil = 0;
+        adminWishCooldownBypass = false;
         lightite = loadIntKey(LIGHTITE_KEY);
         discoLights = loadIntKey(DISCO_LIGHTS_KEY);
         goldenHalo = loadIntKey(GOLDEN_HALO_KEY);
@@ -2346,6 +3155,7 @@
       }
 
       initPersistence();
+      loadAmbiencePrefs();
       let coinsPerClick = 1;
       let greatBallUntil = 0;
       let greatBallTimeout = null;
@@ -2418,8 +3228,58 @@
         renderLuckyBlockInventory();
       }
 
+      function isLuck2xActive() {
+        return Date.now() < luck2xUntil;
+      }
+
+      function renderLuckClover() {
+        if (!luckClover || !luckCloverText) return;
+        const remaining = luck2xUntil - Date.now();
+        if (remaining <= 0) {
+          luckClover.classList.add("hidden");
+          return;
+        }
+        luckClover.classList.remove("hidden");
+        luckCloverText.textContent = `2× Luck: ${Math.ceil(remaining / 1000)}s`;
+      }
+
+      function refreshLuck2xTimer() {
+        if (luck2xTimeout) clearTimeout(luck2xTimeout);
+        luck2xTimeout = null;
+        if (luck2xTick) clearInterval(luck2xTick);
+        luck2xTick = null;
+        const remaining = luck2xUntil - Date.now();
+        if (remaining <= 0) {
+          luck2xUntil = 0;
+          syncCoinsPerClick();
+          renderLuckClover();
+          return;
+        }
+        renderLuckClover();
+        luck2xTick = setInterval(() => renderLuckClover(), 250);
+        luck2xTimeout = setTimeout(() => {
+          luck2xUntil = 0;
+          luck2xTimeout = null;
+          if (luck2xTick) clearInterval(luck2xTick);
+          luck2xTick = null;
+          syncCoinsPerClick();
+          renderLuckClover();
+        }, remaining);
+      }
+
+      function addLuck2xSeconds(seconds) {
+        const add = Math.min(300, Math.max(1, Math.floor(seconds)));
+        const now = Date.now();
+        const base = luck2xUntil > now ? luck2xUntil : now;
+        luck2xUntil = base + add * 1000;
+        if (luck2xUntil - now > 300000) luck2xUntil = now + 300000;
+        refreshLuck2xTimer();
+        syncCoinsPerClick();
+      }
+
       function syncCoinsPerClick() {
-        const base = isUsingGreatBallEffect() ? 2 : 1;
+        let base = isUsingGreatBallEffect() ? 2 : 1;
+        if (isLuck2xActive()) base *= 2;
         coinsPerClick = base + getEquippedPowerUpBonus();
       }
 
@@ -2460,6 +3320,164 @@
           if (r < acc) return p;
         }
         return ANGEL_POWER_UPS[ANGEL_POWER_UPS.length - 1];
+      }
+
+      function rollHeatwaveDrop() {
+        const r = Math.random() * 100;
+        let acc = 0;
+        for (const d of HEATWAVE_DROPS) {
+          acc += d.weight;
+          if (r < acc) return d;
+        }
+        return HEATWAVE_DROPS[HEATWAVE_DROPS.length - 1];
+      }
+
+      function getHeatwaveUnwrapDisplay(drop) {
+        if (drop.type === "powerup") {
+          const p = getPowerUpDef(drop.id);
+          if (!p) return { name: "Unknown", detail: "" };
+          return {
+            name: p.name,
+            detail: `Rarity: 1 in ${p.rarityOneIn}`,
+            bonus: getPowerUpBonusLabel(p),
+          };
+        }
+        if (drop.type === "item" && drop.id === "scorching_heat_disk") {
+          return { name: "Scorching Heat Disk", detail: "Added to your backpack." };
+        }
+        if (drop.type === "block" && drop.id === "demon_lucky_block") {
+          return { name: "Demon Lucky Block", detail: "Added to your backpack." };
+        }
+        return { name: "Unknown", detail: "" };
+      }
+
+      function applyHeatwaveDrop(drop) {
+        if (drop.type === "powerup") {
+          grantPowerUp(drop.id);
+          return;
+        }
+        if (drop.type === "item" && drop.id === "scorching_heat_disk") {
+          scorchingHeatDisks += 1;
+          persistUnifiedSave();
+          renderLuckyBlockInventory();
+          return;
+        }
+        if (drop.type === "block" && drop.id === "demon_lucky_block") {
+          demonLuckyBlocks += 1;
+          persistUnifiedSave();
+          renderLuckyBlockInventory();
+        }
+      }
+
+      function maybeSpeakSuggestedVoice(text) {
+        if (Math.random() >= SUGGESTED_VOICE_CHANCE) return;
+        if (!("speechSynthesis" in window)) return;
+        const t = String(text || "").trim();
+        if (!t) return;
+        try {
+          const u = new SpeechSynthesisUtterance(t);
+          u.rate = 0.92;
+          u.pitch = 0.72;
+          u.volume = 0.7;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(u);
+        } catch {}
+      }
+
+      function rollCorruptedLuckyBlockDrop() {
+        const r = Math.random() * 100;
+        if (r < 30) return { type: "powerup", id: "cor_glitched" }; // 30%
+        if (r < 60) return { type: "random_lucky_block" }; // 30%
+        if (r < 80) return { type: "powerup", id: "cor_decaying" }; // 20%
+        if (r < 95) return { type: "luck_potion" }; // 15%
+        return { type: "item", id: "game_bug" }; // 5%
+      }
+
+      function rollRandomLuckyBlockFromCorruption(with2xLuck) {
+        const base = with2xLuck
+          ? [
+              { kind: "normal", w: 20 },
+              { kind: "shiny", w: 25 },
+              { kind: "golden", w: 20 },
+              { kind: "party", w: 20 },
+              { kind: "angel", w: 15 },
+            ]
+          : [
+              { kind: "normal", w: 30 },
+              { kind: "shiny", w: 20 },
+              { kind: "golden", w: 15 },
+              { kind: "party", w: 15 },
+              { kind: "angel", w: 10 },
+              { kind: "reroll_2x_luck", w: 10 },
+            ];
+        const r = Math.random() * 100;
+        let acc = 0;
+        for (const e of base) {
+          acc += e.w;
+          if (r < acc) {
+            if (e.kind === "reroll_2x_luck") return rollRandomLuckyBlockFromCorruption(true);
+            return e.kind;
+          }
+        }
+        return "normal";
+      }
+
+      function applyCorruptedLuckyBlockDrop(drop) {
+        if (drop.type === "powerup") {
+          grantPowerUp(drop.id);
+          return;
+        }
+        if (drop.type === "random_lucky_block") {
+          const kind = rollRandomLuckyBlockFromCorruption(false);
+          if (kind === "normal") luckyBlocks += 1;
+          else if (kind === "party") partyLuckyBlocks += 1;
+          else if (kind === "golden") goldenLuckyBlocks += 1;
+          else if (kind === "shiny") shinyLuckyBlocks += 1;
+          else if (kind === "angel") angelLuckyBlocks += 1;
+          persistUnifiedSave();
+          renderLuckyBlockInventory();
+          return;
+        }
+        if (drop.type === "luck_potion") {
+          luckPotions += 1;
+          persistUnifiedSave();
+          renderLuckyBlockInventory();
+          return;
+        }
+        if (drop.type === "item" && drop.id === "game_bug") {
+          gameBugs += 1;
+          persistUnifiedSave();
+          renderLuckyBlockInventory();
+        }
+      }
+
+      function getCorruptedLuckyBlockUnwrapDisplay(drop) {
+        if (drop.type === "powerup") {
+          const p = getPowerUpDef(drop.id);
+          if (!p) return { name: "Unknown", detail: "" };
+          return {
+            name: p.name,
+            detail: `Rarity: 1 in ${p.rarityOneIn}`,
+            bonus: getPowerUpBonusLabel(p),
+          };
+        }
+        if (drop.type === "random_lucky_block") {
+          return {
+            name: "Random Lucky Block",
+            detail:
+              "Granted 1 Lucky Block (Normal/Shiny/Gold/Party/Angel) — may reroll once with 2× luck.",
+          };
+        }
+        if (drop.type === "luck_potion") {
+          return {
+            name: "2× Luck Potion",
+            detail: "Added to your backpack. Drink it to start 2× luck for 3 minutes.",
+          };
+        }
+        if (drop.type === "item" && drop.id === "game_bug") {
+          return { name: "Game Bug", detail: "Added to your backpack." };
+        }
+        return { name: "Unknown", detail: "" };
       }
 
       function renderEquippedPokeballMenu() {
@@ -2671,6 +3689,7 @@
       }
 
       function renderLuckyBlockInventory() {
+        const openBusy = unwrapBusy;
         invLuckyBlocks.textContent = `Lucky Blocks: ${luckyBlocks}`;
         invPartyLuckyBlocks.textContent = `Party Lucky Blocks: ${partyLuckyBlocks}`;
         if (invGoldenLuckyBlocks) {
@@ -2694,6 +3713,51 @@
         if (corruptionLuckyBlockInvRow) {
           corruptionLuckyBlockInvRow.classList.toggle("hidden", corruptionLuckyBlocks < 1);
         }
+        if (openCorruptionLuckyBlockBtn) {
+          openCorruptionLuckyBlockBtn.disabled = corruptionLuckyBlocks < 1 || openBusy || !deeperStart2Unlocked;
+        }
+        if (invOpLuckyBlocks) {
+          invOpLuckyBlocks.textContent = `OP Lucky Blocks: ${opLuckyBlocks}`;
+        }
+        if (opLuckyBlockInvRow) {
+          opLuckyBlockInvRow.classList.toggle("hidden", opLuckyBlocks < 1);
+        }
+        if (invHeatwaveLuckyBlocks) {
+          invHeatwaveLuckyBlocks.textContent = `Heatwave Lucky Blocks: ${heatwaveLuckyBlocks}`;
+        }
+        if (heatwaveLuckyBlockInvRow) {
+          const showHeatwave =
+            ENABLE_HEATWAVE_LUCKY_BLOCK && (deeperStart2Unlocked || heatwaveLuckyBlocks > 0);
+          heatwaveLuckyBlockInvRow.classList.toggle("hidden", !showHeatwave);
+        }
+        if (openHeatwaveLuckyBlockBtn) {
+          openHeatwaveLuckyBlockBtn.disabled =
+            !ENABLE_HEATWAVE_LUCKY_BLOCK ||
+            heatwaveLuckyBlocks < 1 ||
+            openBusy ||
+            !deeperStart2Unlocked;
+        }
+        if (invDemonLuckyBlocks) {
+          invDemonLuckyBlocks.textContent = `Demon Lucky Blocks: ${demonLuckyBlocks}`;
+        }
+        if (demonLuckyBlockInvRow) {
+          demonLuckyBlockInvRow.classList.toggle("hidden", demonLuckyBlocks < 1);
+        }
+        if (invScorchingHeatDisks) {
+          invScorchingHeatDisks.textContent = `Scorching Heat Disks: ${scorchingHeatDisks}`;
+          invScorchingHeatDisks.classList.toggle("hidden", scorchingHeatDisks < 1);
+        }
+        if (invGameBugs) {
+          invGameBugs.textContent = `Game Bugs: ${gameBugs}`;
+          invGameBugs.classList.toggle("hidden", gameBugs < 1);
+        }
+        if (invLuckPotions) {
+          invLuckPotions.textContent = `2× Luck Potions: ${luckPotions}`;
+          invLuckPotions.classList.toggle("hidden", luckPotions < 1);
+        }
+        if (drinkLuckPotionBtn) {
+          drinkLuckPotionBtn.disabled = luckPotions < 1 || openBusy;
+        }
         invLightite.textContent = `Lightite: ${lightite}`;
         invDiscoLights.textContent = `Disco Lights: ${discoLights}`;
         if (invGoldenHalo) {
@@ -2707,7 +3771,6 @@
         if (goldenLuckyBlockInvRow) {
           goldenLuckyBlockInvRow.classList.toggle("hidden", !deeperStart2Unlocked);
         }
-        const openBusy = unwrapBusy;
         openLuckyBlockBtn.disabled = luckyBlocks < 1 || openBusy;
         if (openPartyLuckyBlockBtn) {
           openPartyLuckyBlockBtn.disabled = partyLuckyBlocks < 1 || openBusy;
@@ -2732,14 +3795,31 @@
             !beginningBought ||
             coins < GOLDEN_LUCKY_BLOCK_COST;
         }
+        if (heatwaveLuckyBlockShopRow) {
+          heatwaveLuckyBlockShopRow.classList.toggle(
+            "hidden",
+            !ENABLE_HEATWAVE_LUCKY_BLOCK || !deeperStart2Unlocked,
+          );
+        }
+        if (buyHeatwaveLuckyBlockBtn) {
+          buyHeatwaveLuckyBlockBtn.disabled =
+            !ENABLE_HEATWAVE_LUCKY_BLOCK ||
+            !deeperStart2Unlocked ||
+            !shopUnlocked ||
+            !beginningBought ||
+            coins < HEATWAVE_LUCKY_BLOCK_COST;
+        }
         updateCraftingButtons();
         checkItemAdvancements();
       }
 
       syncCorruptionPokeballState();
+      if (luck2xUntil > Date.now()) refreshLuck2xTimer();
       applyPokeballVisual();
       syncCoinsPerClick();
       renderLuckyBlockInventory();
+      renderAmbienceControls();
+      renderLuckClover();
 
       function renderCoins() {
         coinCounter.textContent = `Pokecoins: ${coins}`;
@@ -2950,6 +4030,20 @@
           deeperStart2UnlockedEl.classList.add("hidden");
         }
 
+        if (shopUnlocked && beginningBought && deeperStart2Unlocked) {
+          hopGamesSlashSection.classList.remove("hidden");
+        } else {
+          hopGamesSlashSection.classList.add("hidden");
+        }
+
+        if (hopGamesSlashUnlocked) {
+          hopGamesSlashLocked.classList.add("hidden");
+          hopGamesSlashUnlockedEl.classList.remove("hidden");
+        } else {
+          hopGamesSlashLocked.classList.remove("hidden");
+          hopGamesSlashUnlockedEl.classList.add("hidden");
+        }
+
         if (greatBallPermanent) {
           greatBallShopLocked.classList.add("hidden");
           greatBallShopOwned.classList.remove("hidden");
@@ -2974,7 +4068,37 @@
       playBtn.addEventListener("click", () => {
         titleScreen.classList.add("hidden");
         gameScreen.classList.remove("hidden");
+        if (!ambienceStarted) startAmbienceMusic();
+        else syncAmbienceVolume();
         if (beginningBought) startGoldenCoinSystem();
+      });
+
+      if (musicToggleBtn) {
+        musicToggleBtn.addEventListener("click", async () => {
+          ambienceEnabled = !ambienceEnabled;
+          saveAmbiencePrefs();
+          renderAmbienceControls();
+          if (!ambienceStarted) await startAmbienceMusic();
+          else syncAmbienceVolume();
+        });
+      }
+
+      if (musicVolume) {
+        musicVolume.addEventListener("input", () => {
+          ambienceVolume = clamp01(Number(musicVolume.value) / 100);
+          saveAmbiencePrefs();
+          if (!ambienceStarted) return;
+          syncAmbienceVolume();
+        });
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (!ambienceStarted) return;
+        if (document.hidden) {
+          stopAmbienceMusic();
+        } else {
+          startAmbienceMusic();
+        }
       });
 
       pokeballBtn.addEventListener("click", () => {
@@ -3319,6 +4443,37 @@
         shopStatus.textContent = "Deeper into the start 2 unlocked.";
       });
 
+      buyHopGamesSlashBtn.addEventListener("click", () => {
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+        if (!beginningBought) {
+          shopStatus.textContent = "Buy Beginning first.";
+          return;
+        }
+        if (!deeperStart2Unlocked) {
+          shopStatus.textContent = "Unlock Deeper into the start 2 first.";
+          return;
+        }
+        if (hopGamesSlashUnlocked) {
+          shopStatus.textContent = "</> is already unlocked.";
+          return;
+        }
+        if (coins < HOP_GAMES_SLASH_COST) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+        coins -= HOP_GAMES_SLASH_COST;
+        hopGamesSlashUnlocked = true;
+        renderCoins();
+        saveCoins();
+        saveFlag(HOP_GAMES_SLASH_UNLOCKED_KEY, true);
+        persistUnifiedSave();
+        renderShopState();
+        shopStatus.textContent = "Please go to Fishing World to find a banner stone.";
+      });
+
       buyGoldenLuckyBlockBtn.addEventListener("click", () => {
         if (!shopUnlocked) {
           shopStatus.textContent = "Unlock the shop first.";
@@ -3346,24 +4501,56 @@
         shopStatus.textContent = "Golden Lucky Block added to your backpack.";
       });
 
+      buyHeatwaveLuckyBlockBtn.addEventListener("click", () => {
+        if (!ENABLE_HEATWAVE_LUCKY_BLOCK) return;
+        if (!shopUnlocked) {
+          shopStatus.textContent = "Unlock the shop first.";
+          return;
+        }
+        if (!beginningBought) {
+          shopStatus.textContent = "Buy Beginning first.";
+          return;
+        }
+        if (!deeperStart2Unlocked) {
+          shopStatus.textContent = "Unlock Deeper into the start 2 first.";
+          return;
+        }
+        if (coins < HEATWAVE_LUCKY_BLOCK_COST) {
+          shopStatus.textContent = "Not enough Pokecoins.";
+          return;
+        }
+        coins -= HEATWAVE_LUCKY_BLOCK_COST;
+        heatwaveLuckyBlocks += 1;
+        renderCoins();
+        saveCoins();
+        persistUnifiedSave();
+        renderShopState();
+        renderLuckyBlockInventory();
+        shopStatus.textContent = "Heatwave Lucky Block added to your backpack.";
+      });
+
       advDetailCloseBtn.addEventListener("click", () => {
         closeAdvDetail();
       });
 
-      /** @type {"backpack" | "crafting" | "powerups"} */
+      /** @type {"backpack" | "crafting" | "powerups" | "settings"} */
       let inventoryTab = "backpack";
 
       function applyInventoryView() {
         inventoryMainView.classList.toggle("hidden", inventoryTab !== "backpack");
         inventoryCraftingView.classList.toggle("hidden", inventoryTab !== "crafting");
         inventoryPowerUpsView.classList.toggle("hidden", inventoryTab !== "powerups");
+        if (inventorySettingsView) inventorySettingsView.classList.toggle("hidden", inventoryTab !== "settings");
         inventoryTabBackpack.classList.toggle("inventory-tab-active", inventoryTab === "backpack");
         inventoryTabCrafting.classList.toggle("inventory-tab-active", inventoryTab === "crafting");
         inventoryTabPowerUps.classList.toggle("inventory-tab-active", inventoryTab === "powerups");
+        if (inventoryTabSettings) inventoryTabSettings.classList.toggle("inventory-tab-active", inventoryTab === "settings");
         inventoryTabBackpack.setAttribute("aria-selected", inventoryTab === "backpack" ? "true" : "false");
         inventoryTabCrafting.setAttribute("aria-selected", inventoryTab === "crafting" ? "true" : "false");
         inventoryTabPowerUps.setAttribute("aria-selected", inventoryTab === "powerups" ? "true" : "false");
+        if (inventoryTabSettings) inventoryTabSettings.setAttribute("aria-selected", inventoryTab === "settings" ? "true" : "false");
         if (inventoryTab === "powerups") renderPowerUpCatalog();
+        if (inventoryTab === "settings") renderAmbienceControls();
       }
 
       function closeInventoryModal() {
@@ -3371,6 +4558,7 @@
         inventoryTab = "backpack";
         craftStatus.textContent = "";
         applyInventoryView();
+        syncModalHudState();
       }
 
       backpackBtn.addEventListener("click", () => {
@@ -3380,13 +4568,16 @@
         renderLuckyBlockInventory();
         renderPowerUpCatalog();
         inventoryModal.classList.remove("hidden");
+        syncModalHudState();
       });
 
       function getUnwrapBoxTheme(kind) {
         if (kind === "golden") return "theme-golden";
         if (kind === "shiny") return "theme-shiny";
         if (kind === "angel") return "theme-angel";
+        if (kind === "heatwave") return "theme-heatwave";
         if (kind === "party") return "theme-party";
+        if (kind === "corruption") return "theme-normal";
         return "theme-normal";
       }
 
@@ -3395,6 +4586,8 @@
         if (kind === "party") return "Party Lucky Block";
         if (kind === "shiny") return "Shiny Lucky Block";
         if (kind === "angel") return "Angel Lucky Block";
+        if (kind === "heatwave") return "Heatwave Lucky Block";
+        if (kind === "corruption") return "Corrupted Lucky Block";
         return "Lucky Block";
       }
 
@@ -3441,19 +4634,194 @@
         if (kind === "golden") return goldenLuckyBlocks;
         if (kind === "shiny") return shinyLuckyBlocks;
         if (kind === "angel") return angelLuckyBlocks;
+        if (kind === "corruption") return corruptionLuckyBlocks;
+        if (kind === "heatwave") return heatwaveLuckyBlocks;
         return 0;
       }
 
       function canUnwrapKind(kind) {
         if (unwrapBusy) return false;
         if (getLuckyBlockCountByKind(kind) < 1) return false;
-        if ((kind === "golden" || kind === "shiny" || kind === "angel") && !deeperStart2Unlocked) return false;
+        if ((kind === "golden" || kind === "shiny" || kind === "angel" || kind === "heatwave" || kind === "corruption") && !deeperStart2Unlocked) {
+          return false;
+        }
+        if (kind === "heatwave" && !ENABLE_HEATWAVE_LUCKY_BLOCK) return false;
         return true;
       }
 
       function closeOpenAllConfirmModal() {
         if (openAllConfirmModal) openAllConfirmModal.classList.add("hidden");
         pendingOpenAllKind = null;
+      }
+
+      function normalizeWishToken(raw) {
+        return String(raw).trim().toUpperCase().replace(/\s+/g, "");
+      }
+
+      function parseWishToken(raw) {
+        const t = normalizeWishToken(raw);
+        if (!t) return null;
+        if (t === ADMIN_WISH_SECRET_IAMADMINV) {
+          return { type: "secret", code: ADMIN_WISH_SECRET_IAMADMINV };
+        }
+        if (t === ADMIN_WISH_SECRET_OPLB || t.startsWith(ADMIN_WISH_SECRET_OPLB)) {
+          let amt = 1;
+          const rest = t.slice(ADMIN_WISH_SECRET_OPLB.length).replace(/^X/, "");
+          if (rest) {
+            const n = parseInt(rest, 10);
+            if (Number.isFinite(n) && n > 0) amt = n;
+          }
+          return { type: "secret", code: ADMIN_WISH_SECRET_OPLB, amount: Math.min(1, amt) };
+        }
+        const codeOrder = ["2XL", "NLB", "PLB", "GLB", "SLB", "ALB", "PKC", "RBC"];
+        for (const code of codeOrder) {
+          if (t === code) return { type: "public", code, amount: 1 };
+          if (t.startsWith(code)) {
+            const rest = t.slice(code.length).replace(/^X/, "");
+            const n = rest ? parseInt(rest, 10) : 1;
+            const amount = Number.isFinite(n) && n > 0 ? n : 1;
+            return { type: "public", code, amount };
+          }
+        }
+        return null;
+      }
+
+      function getAdminWishCooldownRemainingMs() {
+        if (adminWishCooldownBypass) return 0;
+        return Math.max(0, adminWishCooldownUntil - Date.now());
+      }
+
+      function formatCooldown(ms) {
+        const totalSec = Math.ceil(ms / 1000);
+        const m = Math.floor(totalSec / 60);
+        const s = totalSec % 60;
+        return `${m}:${String(s).padStart(2, "0")}`;
+      }
+
+      function setAdminWishStatus(text, isError) {
+        if (!adminWishStatus) return;
+        adminWishStatus.textContent = text;
+        adminWishStatus.classList.toggle("error", Boolean(isError));
+      }
+
+      function renderAdminWishStatus() {
+        const remaining = getAdminWishCooldownRemainingMs();
+        if (adminWishCooldownBypass) {
+          setAdminWishStatus("No cooldown active.", false);
+          if (adminWishRedeemBtn) adminWishRedeemBtn.disabled = false;
+          return;
+        }
+        if (remaining > 0) {
+          setAdminWishStatus(`Wait ${formatCooldown(remaining)} before redeeming again.`, true);
+          if (adminWishRedeemBtn) adminWishRedeemBtn.disabled = true;
+          return;
+        }
+        setAdminWishStatus("Ready to redeem.", false);
+        if (adminWishRedeemBtn) adminWishRedeemBtn.disabled = false;
+      }
+
+      function applyAdminWishParsed(parsed) {
+        if (parsed.type === "secret" && parsed.code === ADMIN_WISH_SECRET_IAMADMINV) {
+          adminWishCooldownBypass = true;
+          adminWishCooldownUntil = 0;
+          return "Admin cooldown cleared.";
+        }
+        if (parsed.type === "secret" && parsed.code === ADMIN_WISH_SECRET_OPLB) {
+          if (opLuckyBlocks >= 1) return "OP Lucky Block: already at max (1).";
+          opLuckyBlocks = 1;
+          return "Granted 1 OP Lucky Block.";
+        }
+        const def = ADMIN_WISH_PUBLIC[parsed.code];
+        if (!def) return "Unknown reward.";
+        const amt = Math.min(def.max, Math.max(1, Math.floor(parsed.amount)));
+        if (parsed.code === "2XL") {
+          addLuck2xSeconds(amt);
+          return `2× Luck for ${amt} second${amt === 1 ? "" : "s"} (max 300).`;
+        }
+        if (parsed.code === "NLB") {
+          luckyBlocks += amt;
+          return `+${amt} Normal Lucky Block${amt === 1 ? "" : "s"}.`;
+        }
+        if (parsed.code === "PLB") {
+          partyLuckyBlocks += amt;
+          return `+${amt} Party Lucky Block${amt === 1 ? "" : "s"}.`;
+        }
+        if (parsed.code === "GLB") {
+          goldenLuckyBlocks += amt;
+          return `+${amt} Golden Lucky Block${amt === 1 ? "" : "s"}.`;
+        }
+        if (parsed.code === "SLB") {
+          shinyLuckyBlocks += amt;
+          return `+${amt} Shiny Lucky Block${amt === 1 ? "" : "s"}.`;
+        }
+        if (parsed.code === "ALB") {
+          angelLuckyBlocks += amt;
+          return `+${amt} Angel Lucky Block${amt === 1 ? "" : "s"}.`;
+        }
+        if (parsed.code === "PKC") {
+          coins += amt;
+          return `+${amt} Pokecoins.`;
+        }
+        if (parsed.code === "RBC") {
+          rainbowCoins += amt;
+          return `+${amt} Rainbow Coins.`;
+        }
+        return "Unknown reward.";
+      }
+
+      function redeemAdminWishList() {
+        const lines = (adminWishInput?.value || "")
+          .split(/[\n,;]+/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        if (lines.length === 0) {
+          setAdminWishStatus("Enter at least one wish.", true);
+          return;
+        }
+        if (getAdminWishCooldownRemainingMs() > 0) {
+          renderAdminWishStatus();
+          return;
+        }
+        let grantedBypass = false;
+        let successCount = 0;
+        const results = [];
+        for (const line of lines) {
+          const parsed = parseWishToken(line);
+          if (!parsed) {
+            results.push(`Skipped unknown: ${line}`);
+            continue;
+          }
+          results.push(applyAdminWishParsed(parsed));
+          successCount += 1;
+          if (parsed.type === "secret" && parsed.code === ADMIN_WISH_SECRET_IAMADMINV) {
+            grantedBypass = true;
+          }
+        }
+        if (successCount === 0) {
+          setAdminWishStatus(results.join(" ") || "Nothing redeemed.", true);
+          return;
+        }
+        if (!adminWishCooldownBypass && !grantedBypass) {
+          adminWishCooldownUntil = Date.now() + ADMIN_WISH_COOLDOWN_MS;
+        }
+        persistUnifiedSave();
+        renderCoins();
+        renderRainbowCoins();
+        renderLuckyBlockInventory();
+        checkItemAdvancements();
+        if (adminWishInput) adminWishInput.value = "";
+        setAdminWishStatus(results.join(" "), false);
+        renderAdminWishStatus();
+      }
+
+      function openAdminWishList() {
+        if (adminWishModal) adminWishModal.classList.remove("hidden");
+        renderAdminWishStatus();
+      }
+
+      function closeAdminWishList() {
+        if (adminWishModal) adminWishModal.classList.add("hidden");
+        setAdminWishStatus("", false);
       }
 
       function showOpenAllConfirm(kind) {
@@ -3504,7 +4872,10 @@
           e.preventDefault();
           if (unwrapBusy || unwrapAllKind) return;
           if (getLuckyBlockCountByKind(kind) < 1) return;
-          if ((kind === "golden" || kind === "shiny" || kind === "angel") && !deeperStart2Unlocked) return;
+          if ((kind === "golden" || kind === "shiny" || kind === "angel" || kind === "heatwave" || kind === "corruption") && !deeperStart2Unlocked) {
+            return;
+          }
+          if (kind === "heatwave" && !ENABLE_HEATWAVE_LUCKY_BLOCK) return;
           showOpenAllConfirm(kind);
         });
       }
@@ -3512,7 +4883,20 @@
       function finishUnwrapReveal() {
         const pending = pendingUnwrap;
         if (!pending) return;
-        if (isPowerUpUnwrapKind(pending.kind)) {
+        if (pending.kind === "heatwave") {
+          const drop = pending.drop;
+          if (drop.type === "powerup") {
+            grantPowerUp(drop.id);
+          } else {
+            applyHeatwaveDrop(drop);
+          }
+          showUnwrapReveal(getHeatwaveUnwrapDisplay(drop));
+        } else if (pending.kind === "corruption") {
+          const drop = pending.drop;
+          applyCorruptedLuckyBlockDrop(drop);
+          showUnwrapReveal(getCorruptedLuckyBlockUnwrapDisplay(drop));
+          maybeSpeakSuggestedVoice("Corruption drop suggested.");
+        } else if (isPowerUpUnwrapKind(pending.kind)) {
           grantPowerUp(pending.powerUp.id);
           showUnwrapReveal({
             name: pending.powerUp.name,
@@ -3527,7 +4911,9 @@
         unwrapBusy = false;
         pendingUnwrap = null;
         renderLuckyBlockInventory();
-        if (isPowerUpUnwrapKind(pending.kind)) renderPowerUpCatalog();
+        if (isPowerUpUnwrapKind(pending.kind) || (pending.kind === "heatwave" && pending.drop?.type === "powerup")) {
+          renderPowerUpCatalog();
+        }
         checkUnwrapAdvancements(pending.kind);
         checkItemAdvancements();
         if (unwrapAllKind === pending.kind) {
@@ -3562,6 +4948,12 @@
         } else if (kind === "angel") {
           if (!deeperStart2Unlocked || angelLuckyBlocks < 1) return;
           angelLuckyBlocks -= 1;
+        } else if (kind === "corruption") {
+          if (!deeperStart2Unlocked || corruptionLuckyBlocks < 1) return;
+          corruptionLuckyBlocks -= 1;
+        } else if (kind === "heatwave") {
+          if (!ENABLE_HEATWAVE_LUCKY_BLOCK || !deeperStart2Unlocked || heatwaveLuckyBlocks < 1) return;
+          heatwaveLuckyBlocks -= 1;
         } else {
           return;
         }
@@ -3577,6 +4969,10 @@
           pendingUnwrap = { kind, powerUp: rollShinyPowerUp() };
         } else if (kind === "angel") {
           pendingUnwrap = { kind, powerUp: rollAngelPowerUp() };
+        } else if (kind === "corruption") {
+          pendingUnwrap = { kind, drop: rollCorruptedLuckyBlockDrop() };
+        } else if (kind === "heatwave") {
+          pendingUnwrap = { kind, drop: rollHeatwaveDrop() };
         } else if (kind === "golden") {
           pendingUnwrap = { kind, reward: rollGoldenLuckyReward() };
         } else {
@@ -3615,12 +5011,35 @@
         if (kind) startOpenAllLuckyBlocks(kind);
       });
 
+      openAllConfirmYes.addEventListener("contextmenu", (e) => {
+        if (pendingOpenAllKind !== "normal") return;
+        e.preventDefault();
+        closeOpenAllConfirmModal();
+        openAdminWishList();
+      });
+
       openAllConfirmNo.addEventListener("click", () => {
         closeOpenAllConfirmModal();
       });
 
       openAllConfirmModal.addEventListener("click", (e) => {
         if (e.target === openAllConfirmModal) closeOpenAllConfirmModal();
+      });
+
+      adminWishRedeemBtn.addEventListener("click", () => {
+        redeemAdminWishList();
+      });
+
+      adminWishCancelBtn.addEventListener("click", () => {
+        closeAdminWishList();
+      });
+
+      closeAdminWishBtn.addEventListener("click", () => {
+        closeAdminWishList();
+      });
+
+      adminWishModal.addEventListener("click", (e) => {
+        if (e.target === adminWishModal) closeAdminWishList();
       });
 
       openLuckyBlockBtn.addEventListener("click", () => {
@@ -3643,11 +5062,23 @@
         startLuckyBlockUnwrap("angel");
       });
 
+      if (openCorruptionLuckyBlockBtn) {
+        openCorruptionLuckyBlockBtn.addEventListener("click", () => {
+          startLuckyBlockUnwrap("corruption");
+        });
+      }
+
+      openHeatwaveLuckyBlockBtn.addEventListener("click", () => {
+        startLuckyBlockUnwrap("heatwave");
+      });
+
       bindOpenAllContextMenu(openLuckyBlockBtn, "normal");
       bindOpenAllContextMenu(openPartyLuckyBlockBtn, "party");
       bindOpenAllContextMenu(openGoldenLuckyBlockBtn, "golden");
       bindOpenAllContextMenu(openShinyLuckyBlockBtn, "shiny");
       bindOpenAllContextMenu(openAngelLuckyBlockBtn, "angel");
+      bindOpenAllContextMenu(openCorruptionLuckyBlockBtn, "corruption");
+      bindOpenAllContextMenu(openHeatwaveLuckyBlockBtn, "heatwave");
 
       craftShinyLuckyBlockBtn.addEventListener("click", () => {
         craftStatus.textContent = "";
@@ -3774,6 +5205,25 @@
         applyInventoryView();
       });
 
+      if (inventoryTabSettings) {
+        inventoryTabSettings.addEventListener("click", () => {
+          inventoryTab = "settings";
+          craftStatus.textContent = "";
+          applyInventoryView();
+        });
+      }
+
+      if (drinkLuckPotionBtn) {
+        drinkLuckPotionBtn.addEventListener("click", () => {
+          if (luckPotions < 1) return;
+          luckPotions -= 1;
+          addLuck2xSeconds(LUCK_POTION_MS / 1000);
+          persistUnifiedSave();
+          renderLuckClover();
+          renderLuckyBlockInventory();
+        });
+      }
+
       closeInventoryBtn.addEventListener("click", () => {
         closeInventoryModal();
       });
@@ -3785,6 +5235,20 @@
       closeInventoryBtnPowerUps.addEventListener("click", () => {
         closeInventoryModal();
       });
+
+      if (closeInventoryBtnSettings) {
+        closeInventoryBtnSettings.addEventListener("click", () => {
+          closeInventoryModal();
+        });
+      }
+
+      if (inventoryTabSettings) {
+        inventoryTabSettings.addEventListener("click", () => {
+          inventoryTab = "settings";
+          craftStatus.textContent = "";
+          applyInventoryView();
+        });
+      }
 
       craftGoldChunkBtn.addEventListener("click", () => {
         craftStatus.textContent = "";
@@ -3829,10 +5293,12 @@
         shopStatus.textContent = "";
         renderShopState();
         shopModal.classList.remove("hidden");
+        syncModalHudState();
       });
 
       closeShopBtn.addEventListener("click", () => {
         shopModal.classList.add("hidden");
+        syncModalHudState();
       });
 
       payBtn.addEventListener("click", () => {
@@ -4244,10 +5710,12 @@
 
       function closeExport() {
         exportModal.classList.add("hidden");
+        syncModalHudState();
       }
 
       exportRainbowBtn.addEventListener("click", () => {
         openExport();
+        syncModalHudState();
       });
 
       closeExportBtn.addEventListener("click", () => {
