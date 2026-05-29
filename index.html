@@ -178,8 +178,8 @@
           radial-gradient(2px 2px at 10% 80%, rgba(200, 170, 255, 0.45) 55%, transparent 60%),
           radial-gradient(900px 700px at 60% 40%, rgba(80, 120, 255, 0.09), transparent 65%),
           radial-gradient(700px 500px at 20% 70%, rgba(180, 90, 255, 0.06), transparent 62%),
-          radial-gradient(circle at top, rgba(20, 32, 64, 0.72), rgba(0, 0, 0, 1) 65%);
-        opacity: 0.92;
+          radial-gradient(circle at top, rgba(24, 48, 92, 0.62), rgba(8, 12, 22, 0.78) 70%);
+        opacity: 0.82;
         animation: starDrift 28s linear infinite;
       }
 
@@ -1896,6 +1896,16 @@
               />
             </div>
           </div>
+          <div class="shop-section">
+            <h3>Narrator</h3>
+            <p style="margin-top: 6px; color: #999; font-size: 0.85rem; line-height: 1.35">
+              Disable the suggested voice narration.
+            </p>
+            <label style="display: flex; align-items: center; gap: 10px; font-weight: 800">
+              <input id="removeNarratorToggle" type="checkbox" />
+              Remove narrator
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -2255,6 +2265,7 @@
       const invAngelWings = document.getElementById("invAngelWings");
       const musicToggleBtn = document.getElementById("musicToggleBtn");
       const musicVolume = document.getElementById("musicVolume");
+      const removeNarratorToggle = document.getElementById("removeNarratorToggle");
       const openLuckyBlockBtn = document.getElementById("openLuckyBlockBtn");
       const openPartyLuckyBlockBtn = document.getElementById("openPartyLuckyBlockBtn");
       const openGoldenLuckyBlockBtn = document.getElementById("openGoldenLuckyBlockBtn");
@@ -2451,6 +2462,8 @@
 
       const SUGGESTED_VOICE_CHANCE = 0.25;
       const LUCK_POTION_MS = 3 * 60 * 1000;
+      const REMOVE_NARRATOR_KEY = "pokeball_clicker_remove_narrator";
+      let removeNarrator = false;
 
       const AMBIENCE_ENABLED_KEY = "pokeball_clicker_ambience_enabled";
       const AMBIENCE_VOLUME_KEY = "pokeball_clicker_ambience_volume";
@@ -2473,11 +2486,13 @@
         if (enabledRaw === "true") ambienceEnabled = true;
         const volRaw = Number(localStorage.getItem(AMBIENCE_VOLUME_KEY));
         if (Number.isFinite(volRaw)) ambienceVolume = clamp01(volRaw);
+        removeNarrator = localStorage.getItem(REMOVE_NARRATOR_KEY) === "true";
       }
 
       function saveAmbiencePrefs() {
         localStorage.setItem(AMBIENCE_ENABLED_KEY, ambienceEnabled ? "true" : "false");
         localStorage.setItem(AMBIENCE_VOLUME_KEY, String(clamp01(ambienceVolume)));
+        localStorage.setItem(REMOVE_NARRATOR_KEY, removeNarrator ? "true" : "false");
       }
 
       function renderAmbienceControls() {
@@ -2487,6 +2502,9 @@
         }
         if (musicVolume) {
           musicVolume.value = String(Math.round(clamp01(ambienceVolume) * 100));
+        }
+        if (removeNarratorToggle) {
+          removeNarratorToggle.checked = removeNarrator;
         }
       }
 
@@ -3370,6 +3388,7 @@
       }
 
       function maybeSpeakSuggestedVoice(text) {
+        if (removeNarrator) return;
         if (Math.random() >= SUGGESTED_VOICE_CHANCE) return;
         if (!("speechSynthesis" in window)) return;
         const t = String(text || "").trim();
@@ -4089,6 +4108,14 @@
           saveAmbiencePrefs();
           if (!ambienceStarted) return;
           syncAmbienceVolume();
+        });
+      }
+
+      if (removeNarratorToggle) {
+        removeNarratorToggle.addEventListener("change", () => {
+          removeNarrator = Boolean(removeNarratorToggle.checked);
+          saveAmbiencePrefs();
+          renderAmbienceControls();
         });
       }
 
